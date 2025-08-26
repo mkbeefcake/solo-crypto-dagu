@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import urllib.request
+import requests
 import argparse
 
 NODE_DEF = {
@@ -14,9 +14,8 @@ def main() -> str:
     parser.add_argument('--url', type=str, required=True, help='Target URL')
     args = parser.parse_args()
     
-    response = urllib.request.urlopen(args.url)
-    content = response.read().decode()
-    print(content)
+    response = requests.get(args.url)
+    content = response.text
     return content
 
 if __name__ == '__main__':

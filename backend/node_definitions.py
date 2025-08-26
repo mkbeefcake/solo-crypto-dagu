@@ -50,18 +50,12 @@ def get_node_path(node_name: str):
     for py_file in nodes_dir.glob("*.py"):
         if py_file.name.startswith("_"):
             continue
-            
-        module_name = f"nodes.{py_file.stem}"
-        try:
-            module = importlib.import_module(module_name)
-            if hasattr(module, "NODE_DEF"):
-                node_def_name = module.NODE_DEF["name"]
-                if node_def_name == node_name:
-                    return f"nodes/{py_file.name}"
 
-        except Exception as e:
-            print(f"Warning: Could not load node from {py_file}: {e}")
-    
+        with open(f"nodes/{py_file.name}", "r") as f:
+            file_content = f.read()
+            if f"\"name\": \"{node_name}\"" in file_content:
+                return f"nodes/{py_file.name}"
+                
     return ""
 
 def discover_nodes() -> list[NodeDefinition]:

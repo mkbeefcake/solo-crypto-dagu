@@ -82,6 +82,7 @@ def run_sandboxed_script(file_path: str, func_name: str, kwargs: dict):
 
     # Install additional packages if any
     if packages:
+        logger.info("Dependencies", packages = packages)
         subprocess.run([pip_bin, "install", *packages], check=True)
 
     # Prepare a small runner script
@@ -128,11 +129,8 @@ print(f"{marker}{{result}}")
     # Parse output
     value = None
     output = result.stdout.decode()
-    logger.info("output", output=output)
-    for line in output.splitlines():
-        if line.startswith(marker):
-            value = line[len(marker):].strip()
-            break
+    if marker in output:
+        value = output.split(marker, 1)[1].strip()
 
-    logger.info("result", result=value)
+    logger.info("result", output=output, result=value)
     return value
