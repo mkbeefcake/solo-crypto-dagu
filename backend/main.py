@@ -44,7 +44,7 @@ async def get_port_colors():
 async def root():
     return {"message": "Zoo-Scape Backend API"}
 
-@app.post("/tool/create_custom_tool"):
+@app.post("/tool/create_custom_tool")
 async def create_custom_tool(request: Request):
     try:
         body_bytes = await request.body()
