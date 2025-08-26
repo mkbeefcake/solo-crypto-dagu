@@ -2,10 +2,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 import uvicorn
+import asyncio
 
+from lib.log.logger import logger
+from solo_mcp.server import mcp
 from node_definitions import NODE_DEFINITIONS, NodeDefinition, PortType
 
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,6 +18,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+async def startup_server():
+    logger.info("Started MCP server")
+    asyncio.create_task(mcp.run_sse_async(mount_path="/mcp"))
 
 @app.get("/nodes/types", response_model=List[NodeDefinition])
 async def get_node_types():
