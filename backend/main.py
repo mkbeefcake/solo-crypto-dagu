@@ -4,22 +4,29 @@ from typing import List
 from solomcp.server import register_mcp_custom_tool
 from contextlib import asynccontextmanager
 from lib.log.logger import logger
+from lib.variable import temp_venv_directory
 from solomcp.server import mcp
 from node_definitions import NODE_DEFINITIONS, NodeDefinition, PortType
 
 import uvicorn
 import asyncio
 import json
-
+import tempfile
+import shutil
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
-    logger.info("Started MCP server", available_tools = await mcp.list_tools())
+    logger.info("Starting MCP server")
+    temp_venv_directory = tempfile.mkdtemp()
+
+    # logger.info("Started MCP server", available_tools = await mcp.list_tools())
     asyncio.create_task(mcp.run_sse_async(mount_path="/mcp"))
     yield
 
     # shutdown
+     # Delete temporary directory
+    shutil.rmtree(temp_venv_directory, ignore_errors=True)
     logger.info("Stopping MCP server")
 
 
