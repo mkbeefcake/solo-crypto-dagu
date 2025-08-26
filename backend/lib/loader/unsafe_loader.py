@@ -6,6 +6,7 @@ import sys
 import json
 import ast
 
+from lib.log.logger import logger
 from lib.variable import temp_venv_directory
 
 def load_function_from_file(file_path, func_name):
@@ -72,7 +73,7 @@ def run_sandboxed_script(file_path: str, func_name: str, kwargs: dict):
     packages = get_imported_packages(file_path)
 
     # Create a temporary virtual environment
-    venv_dir = os.path.join(temp_venv_directory, "venv")
+    venv_dir = os.path.join(temp_venv_directory, "_venv_")
     subprocess.run([sys.executable, "-m", "venv", venv_dir], check=True)
 
     # Path to pip and python inside the venv
@@ -84,31 +85,54 @@ def run_sandboxed_script(file_path: str, func_name: str, kwargs: dict):
         subprocess.run([pip_bin, "install", *packages], check=True)
 
     # Prepare a small runner script
+    marker = "RUNNER_RESULT:"
     runner_code = f"""
 import json
 import sys
-from {os.path.splitext(os.path.basename(file_path))[0]} import {func_name}
+from temp_node import {func_name}
 
-args = json.loads(sys.argv[1])
-result = {func_name}(**args)
-print(json.dumps(result))
+kwargs = json.loads(sys.argv[1])
+def kwargs_to_cli_args(kwargs: dict) -> list:
+    args = []
+    for k, v in kwargs.items():
+        args.append(f"--{{k}}")
+        args.append(str(v))
+    return args
+
+args = kwargs_to_cli_args(kwargs)
+sys.argv = ["_runner.py"] + args  
+result = {func_name}()
+print(f"{marker}{{result}}")
 """
+    # copy node file into temp_venv_directory
+    with open(file_path, "r") as f:
+        data = f.read()
+        temp_node_file = os.path.join(temp_venv_directory, "temp_node.py")
+        with open(temp_node_file, "w") as ff:
+            ff.write(data)
 
-    runner_file = os.path.join(temp_venv_directory, "runner.py")
+    # create runner file
+    runner_file = os.path.join(temp_venv_directory, "_runner.py")
     with open(runner_file, "w") as f:
         f.write(runner_code)
-
-    # Run the script in subprocess
+    
     result = subprocess.run(
         [python_bin, runner_file, json.dumps(kwargs)],
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        cwd=os.path.dirname(file_path)
+        stderr=subprocess.PIPE
     )
 
     if result.returncode != 0:
         raise RuntimeError(result.stderr.decode())
 
     # Parse output
-    output = json.loads(result.stdout.decode())
-    return output
+    value = None
+    output = result.stdout.decode()
+    logger.info("output", output=output)
+    for line in output.splitlines():
+        if line.startswith(marker):
+            value = line[len(marker):].strip()
+            break
+
+    logger.info("result", result=value)
+    return value
