@@ -5,7 +5,7 @@ import uvicorn
 import asyncio
 
 from lib.log.logger import logger
-from solo_mcp.server import mcp
+from solomcp.server import mcp
 from node_definitions import NODE_DEFINITIONS, NodeDefinition, PortType
 
 app = FastAPI()
@@ -19,11 +19,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-async def startup_server():
-    logger.info("Started MCP server")
-    asyncio.create_task(mcp.run_sse_async(mount_path="/mcp"))
-
 @app.get("/nodes/types", response_model=List[NodeDefinition])
 async def get_node_types():
     return NODE_DEFINITIONS
@@ -36,5 +31,12 @@ async def get_port_colors():
 async def root():
     return {"message": "Zoo-Scape Backend API"}
 
+
+@app.on_event("startup")
+async def startup_server():
+    logger.info("Started MCP server", available_tools = await mcp.list_tools())
+    asyncio.create_task(mcp.run_sse_async(mount_path="/mcp"))
+
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)
