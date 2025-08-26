@@ -1,0 +1,82 @@
+{
+  "nodes": [
+    {
+      "id": "node_1756221252111",
+      "type": "general",
+      "position": {
+        "x": 342,
+        "y": 33
+      },
+      "data": {
+        "label": "URL Request",
+        "inputs": [],
+        "outputs": [
+          {
+            "name": "content",
+            "label": null,
+            "type": "string"
+          }
+        ],
+        "midputs": [
+          {
+            "name": "url",
+            "label": "Enter url",
+            "type": "string"
+          }
+        ]
+      },
+      "measured": {
+        "width": 176,
+        "height": 99
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "node_1756221273839",
+      "type": "general",
+      "position": {
+        "x": 345.5,
+        "y": 178
+      },
+      "data": {
+        "label": "Last Row",
+        "inputs": [
+          {
+            "name": "text",
+            "label": null,
+            "type": "string"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "last_item",
+            "label": null,
+            "type": "string"
+          }
+        ],
+        "midputs": []
+      },
+      "measured": {
+        "width": 169,
+        "height": 50
+      },
+      "selected": false,
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "node_1756221252111",
+      "sourceHandle": "output-0",
+      "target": "node_1756221273839",
+      "targetHandle": "input-0",
+      "id": "xy-edge__node_1756221252111output-0-node_1756221273839input-0"
+    }
+  ],
+  "viewport": {
+    "x": -372,
+    "y": -26,
+    "zoom": 2
+  }
+}
