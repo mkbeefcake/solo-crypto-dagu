@@ -5,12 +5,7 @@ import { styled } from "@mui/material/styles";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-// import "./styles.css";
+import WorkFlow from "./Workflow";
 
 export default function WorkflowTab() {
   const [value, setValue] = React.useState("1");
@@ -48,17 +43,17 @@ export default function WorkflowTab() {
                 <CustomTab label="Assign Schedule11" value="11" />
               </TabList>
             </Box>
-            <TabPanel value="1">Advertised Schedule</TabPanel>
-            <TabPanel value="2">Pending Assignments</TabPanel>
-            <TabPanel value="3">3</TabPanel>
-            <TabPanel value="4">4</TabPanel>
-            <TabPanel value="5">5</TabPanel>
-            <TabPanel value="6">6</TabPanel>
-            <TabPanel value="7">7</TabPanel>
-            <TabPanel value="8">8</TabPanel>
-            <TabPanel value="9">9</TabPanel>
-            <TabPanel value="10">10</TabPanel>
-            <TabPanel value="11">11</TabPanel>
+            <TabPanel value="1"><WorkFlow/></TabPanel>
+            <TabPanel value="2"><WorkFlow/></TabPanel>
+            <TabPanel value="3"><WorkFlow/></TabPanel>
+            <TabPanel value="4"><WorkFlow/></TabPanel>
+            <TabPanel value="5"><WorkFlow/></TabPanel>
+            <TabPanel value="6"><WorkFlow/></TabPanel>
+            <TabPanel value="7"><WorkFlow/></TabPanel>
+            <TabPanel value="8"><WorkFlow/></TabPanel>
+            <TabPanel value="9"><WorkFlow/></TabPanel>
+            <TabPanel value="10"><WorkFlow/></TabPanel>
+            <TabPanel value="11"><WorkFlow/></TabPanel>
           </TabContext>
         </Box>
       </div>
