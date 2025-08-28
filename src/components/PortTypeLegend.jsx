@@ -23,7 +23,7 @@ export function PortTypeLegend() {
         borderBottom: '1px solid #000000',
         paddingBottom: '4px'
       }}>
-        Port Types
+        <span>Port Types</span>
       </div>
       
       {Object.entries(typeColors).map(([type, color]) => (
@@ -38,6 +38,7 @@ export function PortTypeLegend() {
             height: '12px',
             backgroundColor: color,
             borderRadius: '50%',
+            color: 'black',
             border: '1px solid #000000'
           }} />
           <span>{type}</span>

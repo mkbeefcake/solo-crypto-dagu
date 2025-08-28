@@ -23,7 +23,6 @@ export function GeneralNode({ id, data }) {
       <div className="node-header">
         {label}
       </div>
-      
       {midputs.length > 0 && (
         <div className="node-midputs">
           {midputs.map((midput, index) => (
@@ -45,11 +44,11 @@ export function GeneralNode({ id, data }) {
         <Handle
           key={`input-${index}`}
           type="target"
-          position={Position.Left}
+          position={Position.top}
           id={`input-${index}`}
           style={{ 
             backgroundColor: typeColors[input.type],
-            top: `${((index + 1) * 100) / (inputs.length + 1)}%`
+            left: `${((index + 1) * 100) / (inputs.length + 1)}%`
           }}
           data-type={input.type}
         />
@@ -59,11 +58,11 @@ export function GeneralNode({ id, data }) {
         <Handle
           key={`output-${index}`}
           type="source"
-          position={Position.Right}
+          position={Position.Bottom}
           id={`output-${index}`}
           style={{ 
             backgroundColor: typeColors[output.type],
-            top: `${((index + 1) * 100) / (outputs.length + 1)}%`
+            left: `${((index + 1) * 100) / (outputs.length + 1)}%`
           }}
           data-type={output.type}
         />

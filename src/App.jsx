@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, useReactFlow, ReactFlowProvider } from '@xyflow/react';
+import { ReactFlow, Background, MiniMap,  applyNodeChanges, applyEdgeChanges, addEdge, useReactFlow, ReactFlowProvider, BaseEdge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { GeneralNode } from './components/GeneralNode';
 import { FlowControl } from './components/FlowControl';
@@ -103,13 +103,15 @@ function Flow() {
     <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
       <Sidebar />
       <div style={{ flex: 1, marginLeft: '200px' }}>
-        <FlowControl onLoad={onLoad} />
-        
+        <FlowControl onLoad={onLoad} />        
         <div ref={reactFlowWrapper} style={{ width: '100%', height: 'calc(100vh - 60px)', position: 'relative' }}>
           <PortTypeLegend />
           <ReactFlow
             nodes={nodes}
             edges={edges}
+            nodesFocusable={true}
+            edgesFocusable={true}
+            // defaultEdgeOptions={{ animated: true }}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -118,7 +120,10 @@ function Flow() {
             onDrop={onDrop}
             onDragOver={onDragOver}
             fitView
-          />
+          >
+            <Background/>
+            {/* <MiniMap/> */}
+          </ReactFlow>
         </div>
       </div>
     </div>

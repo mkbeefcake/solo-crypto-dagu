@@ -4,3 +4,4 @@ node_modules
 pytest-cache-*
 _venv_
 tmp
+package-lock.json
