@@ -2,6 +2,8 @@ import { useDnD } from './DnDContext';
 import { useNodeTypes } from '../hooks/useNodeTypes';
 import './Sidebar.css';
 
+import Button from "@mui/material/Button";
+
 export default function Sidebar() {
   const [_, setType] = useDnD();
   const { nodeTypes, loading, error } = useNodeTypes();
@@ -30,8 +32,8 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
+      <h4>Drag & Drop Nodes</h4>
       <div style={{ flex: 1, overflowY: "auto" }}>
-        <div className="sidebar-title">Drag & Drop Nodes</div>
         
         {nodeTypes.map((nodeType) => (
           <div 
@@ -44,10 +46,19 @@ export default function Sidebar() {
           </div>
         ))}
       </div>
-      <div style={{ height: "300px", borderTop: "1px solid #ccc", padding: "10px" }}>
+      <div style={{ height: "450px", borderTop: "1px solid #ccc", padding: "10px" }}>
+        <h4>WorkFlows</h4>
+        <Button variant="outlined" color="outline" onClick={() => alert("Clicked!")}>
+          New Workflow
+        </Button>
+        <Button variant="outlined" color="outline" onClick={() => alert("Clicked!")}>
+          Save All Workflows
+        </Button>
         <h4>Claude AI terminal</h4>
-        <textarea style={{ width: '100%', height:'200px'}}/>
-        <button> Run </button>
+        <textarea style={{ width: '100%', height:'150px'}}/>
+        <Button variant="outlined" color="outline" onClick={() => alert("Clicked!")}>
+          Run
+        </Button>
       </div>
 
     </aside>

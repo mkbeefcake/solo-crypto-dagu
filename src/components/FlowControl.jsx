@@ -5,7 +5,7 @@ export function FlowControl({ onLoad }) {
   const { getNodes, getEdges, getViewport, setViewport } = useReactFlow();
 
   const onExecute = () => {
-    
+
   }
 
   const onSave = useCallback(() => {
@@ -71,7 +71,7 @@ export function FlowControl({ onLoad }) {
           cursor: 'pointer'
         }}
       >
-        Save Flow
+        Export
       </button>
       
       <label style={{
@@ -84,7 +84,7 @@ export function FlowControl({ onLoad }) {
         fontSize: '12px',
         cursor: 'pointer'
       }}>
-        Load Flow
+        Import
         <input
           type="file"
           accept=".json"
