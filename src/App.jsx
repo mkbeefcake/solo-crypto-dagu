@@ -9,6 +9,7 @@ import { DnDProvider, useDnD } from './components/DnDContext';
 import { PortColorProvider } from './contexts/PortColorContext';
 import { useNodeTypes } from './hooks/useNodeTypes';
 import Sidebar from './components/Sidebar';
+import WorkFlowTabs from './components/WorkflowTab';
 
 const nodeTypes = {
   general: GeneralNode,
@@ -102,10 +103,11 @@ function Flow() {
   return (
     <div style={{ display: 'flex' }}>
       <Sidebar />
-      <div style={{ flex: 1, marginLeft: '200px' }}>
-        <FlowControl onLoad={onLoad} />        
-        <div ref={reactFlowWrapper} style={{ width: '100%', height: 'calc(100vh - 20px)', position: 'relative' }}>
+      <div style={{ flex: 1, marginLeft: '200px'}}>
+        <WorkFlowTabs />
+        {/* <div ref={reactFlowWrapper} style={{ width: '100%', height: 'calc(100vh - 20px)', position: 'relative' }}>
           <PortTypeLegend />
+          <FlowControl onLoad={onLoad} />        
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -122,9 +124,8 @@ function Flow() {
             fitView
           >
             <Background/>
-            {/* <MiniMap/> */}
           </ReactFlow>
-        </div>
+        </div> */}
       </div>
     </div>
   );
