@@ -62,6 +62,22 @@ export function FlowControl({ onLoad }) {
         onClick={onSave}
         style={{
           padding: '8px 16px',
+          backgroundColor: 'red',
+          color: '#ffffff',
+          border: 'none',
+          borderRadius: '4px',
+          fontFamily: 'Courier New, monospace',
+          fontSize: '12px',
+          cursor: 'pointer'
+        }}
+      >
+        Delete
+      </button>
+
+      <button 
+        onClick={onSave}
+        style={{
+          padding: '8px 16px',
           backgroundColor: '#000000',
           color: '#ffffff',
           border: 'none',
