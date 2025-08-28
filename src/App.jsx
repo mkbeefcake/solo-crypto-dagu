@@ -100,11 +100,11 @@ function Flow() {
   );
  
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
+    <div style={{ display: 'flex' }}>
       <Sidebar />
       <div style={{ flex: 1, marginLeft: '200px' }}>
         <FlowControl onLoad={onLoad} />        
-        <div ref={reactFlowWrapper} style={{ width: '100%', height: 'calc(100vh - 60px)', position: 'relative' }}>
+        <div ref={reactFlowWrapper} style={{ width: '100%', height: 'calc(100vh - 20px)', position: 'relative' }}>
           <PortTypeLegend />
           <ReactFlow
             nodes={nodes}

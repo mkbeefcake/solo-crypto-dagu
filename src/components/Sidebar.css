@@ -7,9 +7,11 @@
   border-right: 1px solid #ccc;
   position: fixed;
   left: 0;
-  top: 0;
+  top: 0;  
   z-index: 1000;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-title {
