@@ -8,9 +8,12 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import WorkFlow from "./Workflow";
 import AddIcon from "@mui/icons-material/Add";
+import { useWorkflow } from "./WorkFlowContext";
 
-export default function WorkflowTab() {
-  const [value, setValue] = React.useState("1");
+export default function WorkflowTab( { }) {
+
+  const [value, setValue] = React.useState();
+  const { workflows } = useWorkflow()
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -25,6 +28,11 @@ export default function WorkflowTab() {
       textTransform: "none"
     })
   );
+
+  React.useEffect(() => {
+    setValue(workflows.length > 0 ? workflows[0].name : "")
+  }, [])
+
   return (
     <div>
       <div className="top-container">
@@ -36,20 +44,28 @@ export default function WorkflowTab() {
                 variant="scrollable"
                 scrollButtons="auto"
                 aria-label="lab API tabs example"
+                value={"workflow1"}
               >
-                <CustomTab label="Workflow 1" value="1" />
-                <CustomTab label="Workflow 2" value="2" />
-                <CustomTab label="Workflow 3" value="3" />
-                <CustomTab label="Workflow 4" value="4" />
+                {
+                  workflows.map((workflow, index) => (
+                    <CustomTab 
+                      key={`tab-${workflow.id}`} 
+                      label={workflow.name} 
+                      value={workflow.name} />
+                  ))
+                }
               </TabList>
               <IconButton onClick={handleAddTab} size="small" color="success">
                 <AddIcon />
               </IconButton>              
             </Box>
-            <TabPanel value="1"><WorkFlow/></TabPanel>
-            <TabPanel value="2"><WorkFlow/></TabPanel>
-            <TabPanel value="3"><WorkFlow/></TabPanel>
-            <TabPanel value="4"><WorkFlow/></TabPanel>
+            {
+              workflows.map((workflow, index) => (
+                <TabPanel key={`tabpanel-${workflow.id}`} value={workflow.name}>
+                  <WorkFlow workflow={workflow.flow}/>
+                </TabPanel>
+              ))
+            }
           </TabContext>
         </Box>
       </div>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { ReactFlow, Background, MiniMap,  applyNodeChanges, applyEdgeChanges, addEdge, useReactFlow, ReactFlowProvider, BaseEdge } from '@xyflow/react';
 import { GeneralNode } from './GeneralNode';
 import { FlowControl } from './FlowControl';
@@ -19,14 +19,26 @@ const initialNodes = [];
 const initialEdges = [];
  
 export default function WorkFlow({ workflow }) {
+  const {getNodes, getEdges, getViewport, setViewport, screenToFlowPosition } = useReactFlow();
+  const [type] = useDnD();
+
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-  const { setViewport, screenToFlowPosition } = useReactFlow();
-  const [type] = useDnD();
-  const { nodeTypes: availableNodeTypes } = useNodeTypes();
-  const reactFlowWrapper = useRef(null);
   const [showChat, setShowChat] = useState(false);
 
+  const { nodeTypes: availableNodeTypes } = useNodeTypes();
+  const reactFlowWrapper = useRef(null);
+
+  useEffect(() => {
+    try {
+      setNodes(workflow.nodes??[])
+      setEdges(workflow.edges??[])
+      setViewport(workflow.viewport??[])
+    }
+    catch(err) {
+      console.log(`Error occurs: ${err}`)
+    }
+  }, [])
  
   const onNodesChange = useCallback(
     (changes) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
@@ -46,6 +58,30 @@ export default function WorkFlow({ workflow }) {
     [nodes],
   );
 
+  const onExecute = useCallback(() => {
+
+  }, [])
+
+  const onDelete = useCallback(() =>{
+
+  }, [])
+
+  const onSave = useCallback(() => {
+    const flow = {
+      nodes: getNodes(),
+      edges: getEdges(),
+      viewport: getViewport(),
+    };
+    
+    const dataStr = JSON.stringify(flow, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'flow.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [getNodes, getEdges, getViewport]);
 
   const onLoad = useCallback((file) => {
     if (file) {
@@ -115,7 +151,7 @@ export default function WorkFlow({ workflow }) {
   return (
     <div ref={reactFlowWrapper} className='flex w-[calc(100vw-270px)] h-[calc(100vh-120px)]' style={{ position: 'relative' }}>
       <PortTypeLegend />
-      <FlowControl onLoad={onLoad} />
+      <FlowControl onLoad={onLoad} onSave={onSave} onDelete={onDelete} onExecute={onExecute} />
       <ReactFlow
         nodes={nodes}
         edges={edges}

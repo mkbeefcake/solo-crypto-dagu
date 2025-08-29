@@ -1,0 +1,185 @@
+[
+  {
+    "id": 1,
+    "name": "workflow1",
+    "flow": {
+        "nodes": [
+            {
+            "id": "node_1756451191113",
+            "type": "general",
+            "position": {
+                "x": 293.5,
+                "y": 71.69999694824219
+            },
+            "data": {
+                "label": "URL Request",
+                "inputs": [],
+                "outputs": [
+                {
+                    "name": "content",
+                    "label": null,
+                    "type": "string"
+                }
+                ],
+                "midputs": [
+                {
+                    "name": "url",
+                    "label": "Enter url",
+                    "type": "string"
+                }
+                ]
+            },
+            "measured": {
+                "width": 191,
+                "height": 61
+            },
+            "selected": false,
+            "dragging": false
+            },
+            {
+            "id": "node_1756451192953",
+            "type": "general",
+            "position": {
+                "x": 342.25,
+                "y": 149.79999542236328
+            },
+            "data": {
+                "label": "Last Row",
+                "inputs": [
+                {
+                    "name": "text",
+                    "label": null,
+                    "type": "string"
+                }
+                ],
+                "outputs": [
+                {
+                    "name": "last_item",
+                    "label": null,
+                    "type": "string"
+                }
+                ],
+                "midputs": []
+            },
+            "measured": {
+                "width": 73,
+                "height": 40
+            },
+            "selected": true,
+            "dragging": false
+            }
+        ],
+        "edges": [
+            {
+            "source": "node_1756451191113",
+            "sourceHandle": "output-0",
+            "target": "node_1756451192953",
+            "targetHandle": "input-0",
+            "id": "xy-edge__node_1756451191113output-0-node_1756451192953input-0"
+            }
+        ],
+        "viewport": {
+            "x": -406.5,
+            "y": -6.399993896484375,
+            "zoom": 2
+        }
+    }
+  },
+  {
+    "id": 2,
+    "name": "workflow2",
+    "flow": {
+        "nodes": [
+            {
+            "id": "node_1756451462777",
+            "type": "general",
+            "position": {
+                "x": 353.5,
+                "y": 75.69999694824219
+            },
+            "data": {
+                "label": "Last Row",
+                "inputs": [
+                {
+                    "name": "text",
+                    "label": null,
+                    "type": "string"
+                }
+                ],
+                "outputs": [
+                {
+                    "name": "last_item",
+                    "label": null,
+                    "type": "string"
+                }
+                ],
+                "midputs": []
+            },
+            "measured": {
+                "width": 73,
+                "height": 40
+            },
+            "selected": false,
+            "dragging": false
+            },
+            {
+            "id": "node_1756451467103",
+            "type": "general",
+            "position": {
+                "x": 300.5,
+                "y": 139.79999542236328
+            },
+            "data": {
+                "label": "Split",
+                "inputs": [
+                {
+                    "name": "text",
+                    "label": null,
+                    "type": "string"
+                }
+                ],
+                "outputs": [
+                {
+                    "name": "items",
+                    "label": null,
+                    "type": "list"
+                }
+                ],
+                "midputs": [
+                {
+                    "name": "text",
+                    "label": "Enter text to split (use , for delimiter)",
+                    "type": "string"
+                }
+                ]
+            },
+            "measured": {
+                "width": 191,
+                "height": 61
+            },
+            "selected": true,
+            "dragging": false
+            }
+        ],
+        "edges": [
+            {
+            "source": "node_1756451462777",
+            "sourceHandle": "output-0",
+            "target": "node_1756451467103",
+            "targetHandle": "input-0",
+            "id": "xy-edge__node_1756451462777output-0-node_1756451467103input-0"
+            }
+        ],
+        "viewport": {
+            "x": -258,
+            "y": -11.399993896484375,
+            "zoom": 2
+        }
+        }
+  },
+  {
+    "id": 3,
+    "name": "workflow3",
+    "flow": {}
+  }
+]

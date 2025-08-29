@@ -1,11 +1,19 @@
+import { useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { DnDProvider } from './components/DnDContext';
 import { PortColorProvider } from './contexts/PortColorContext';
 import Sidebar from './components/Sidebar';
 import WorkFlowTabs from './components/WorkflowTab';
+import { useWorkflow, WorkflowProvider } from './components/WorkFlowContext';
  
 function Flow() {
+  const { loadAllWorkflows } = useWorkflow()
+
+  useEffect(() => {
+    loadAllWorkflows()
+  }, [])
+
   return (
     <div style={{ display: 'flex' }}>
       <Sidebar />
@@ -21,7 +29,9 @@ export default function App() {
     <ReactFlowProvider>
       <DnDProvider>
         <PortColorProvider>
-          <Flow />
+          <WorkflowProvider>
+            <Flow />
+          </WorkflowProvider>
         </PortColorProvider>
       </DnDProvider>
     </ReactFlowProvider>
