@@ -7,6 +7,9 @@ import { isValidConnection } from '../utils/connectionValidation';
 import { useDnD } from './DnDContext';
 import { useNodeTypes } from '../hooks/useNodeTypes';
 import '@xyflow/react/dist/style.css';
+import FloatingChat from './FloatingChat';
+import { IconButton } from '@mui/material';
+import { ChatBubble, Forum } from '@mui/icons-material';
 
 const nodeTypes = {
   general: GeneralNode,
@@ -22,6 +25,8 @@ export default function WorkFlow({ workflow }) {
   const [type] = useDnD();
   const { nodeTypes: availableNodeTypes } = useNodeTypes();
   const reactFlowWrapper = useRef(null);
+  const [showChat, setShowChat] = useState(false);
+
  
   const onNodesChange = useCallback(
     (changes) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
@@ -99,6 +104,14 @@ export default function WorkFlow({ workflow }) {
     [screenToFlowPosition, type, availableNodeTypes, setNodes],
   );
  
+  const showFloatingChat = (e) => {
+    setShowChat(true);
+  }
+
+  const minimizeFloatingChat = (e) => {
+    setShowChat(false);
+  }
+
   return (
     <div ref={reactFlowWrapper} className='flex w-[calc(100vw-270px)] h-[calc(100vh-120px)]' style={{ position: 'relative' }}>
       <PortTypeLegend />
@@ -120,6 +133,19 @@ export default function WorkFlow({ workflow }) {
       >
         <Background/>
       </ReactFlow>
+      <IconButton
+        sx={{
+          position: 'absolute',
+          bottom: 10,
+          left: 10,
+          zIndex: 1000
+        }}
+        color='primary'
+        onClick={showFloatingChat}
+      >
+        <Forum/>
+      </IconButton>
+      {showChat && (<FloatingChat triggerMinimize={minimizeFloatingChat} />)}
     </div>
   );
 }

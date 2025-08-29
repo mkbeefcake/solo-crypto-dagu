@@ -46,21 +46,6 @@ export default function Sidebar() {
           </div>
         ))}
       </div>
-      <div style={{ height: "450px", borderTop: "1px solid #ccc", padding: "10px" }}>
-        <h4>WorkFlows</h4>
-        <Button variant="outlined" color="outline" onClick={() => alert("Clicked!")}>
-          New Workflow
-        </Button>
-        <Button variant="outlined" color="outline" onClick={() => alert("Clicked!")}>
-          Save All Workflows
-        </Button>
-        <h4>Claude AI terminal</h4>
-        <textarea style={{ width: '100%', height:'150px'}}/>
-        <Button variant="outlined" color="outline" onClick={() => alert("Clicked!")}>
-          Run
-        </Button>
-      </div>
-
     </aside>
   );
 }

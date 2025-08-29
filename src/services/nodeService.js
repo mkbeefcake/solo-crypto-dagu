@@ -1,4 +1,5 @@
 export class NodeService {
+
   static async getNodeTypes() {
     try {
       const response = await fetch('/api/nodes/types');
@@ -11,4 +12,6 @@ export class NodeService {
       throw error;
     }
   }
+
+  
 }
