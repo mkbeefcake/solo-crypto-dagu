@@ -5,7 +5,7 @@ import MinimizeIcon from "@mui/icons-material/Close";
 import ChatIcon from "@mui/icons-material/ChatBubble";
 
 
-export default function FloatingChat( { triggerMinimize } ) {
+export default function FloatingChat( { triggerMinimize, sendChat } ) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [windowState, setWindowState] = useState(false);
@@ -14,6 +14,7 @@ export default function FloatingChat( { triggerMinimize } ) {
     if (!input.trim()) return;
     setMessages([...messages, input]);
     setInput("");
+    sendChat(input);
   };
 
   const handleKeyPress = (e) => {

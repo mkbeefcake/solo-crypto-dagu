@@ -5,11 +5,37 @@ import initWorkFlows from './test.json'
 
 const WorkflowContext = createContext();
 
+const PROMPT_TEMPLATE = `You are an expert React Flow designer. 
+Given the following user request, generate or modify a detailed workflow in JSON format. 
+The workflow should include steps, conditions, and actions to achieve the user's goal.
+
+User Request: {user_request}
+Workflow JSON:`;
+      
+
+
 export const WorkflowProvider = ({ children }) => {
   const [workflows, setWorkflows] = useState([]); // list of workflows
   const [activeWorkflowId, setActiveWorkflowId] = useState(null);
 
   const activeWorkflow = workflows.find((w) => w.id === activeWorkflowId);
+
+  // Ask Claude AI to generate or modify a workflow
+  const askToClaude = async (userMessage, workflow) => {
+    try {
+      const res = await axios.post("/api/workflow/claude", { 
+        user_request: userMessage,
+        current_json: workflow ? JSON.stringify(workflow) : ""
+      }); 
+      
+      console.log(`askToCluade : ${JSON.stringify(res)}`)
+      return res.data.updated_json;
+
+    } catch (err) {
+      console.error("askClaude failed:", err);
+      return "";
+    }
+  };
 
   // Save workflow to backend
   const saveWorkflow = async (workflow) => {
@@ -63,7 +89,8 @@ export const WorkflowProvider = ({ children }) => {
         setActiveWorkflowId,
         saveWorkflow,
         loadWorkflow,
-        loadAllWorkflows
+        loadAllWorkflows,
+        askToClaude
       }}
     >
       {children}

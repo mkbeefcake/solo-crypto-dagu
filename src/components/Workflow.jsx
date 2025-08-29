@@ -10,6 +10,7 @@ import '@xyflow/react/dist/style.css';
 import FloatingChat from './FloatingChat';
 import { IconButton } from '@mui/material';
 import { ChatBubble, Forum } from '@mui/icons-material';
+import { useWorkflow } from './WorkFlowContext';
 
 const nodeTypes = {
   general: GeneralNode,
@@ -19,7 +20,8 @@ const initialNodes = [];
 const initialEdges = [];
  
 export default function WorkFlow({ workflow }) {
-  const {getNodes, getEdges, getViewport, setViewport, screenToFlowPosition } = useReactFlow();
+  const { getNodes, getEdges, getViewport, setViewport, screenToFlowPosition } = useReactFlow();
+  const { askToClaude } = useWorkflow();
   const [type] = useDnD();
 
   const [nodes, setNodes] = useState(initialNodes);
@@ -27,7 +29,7 @@ export default function WorkFlow({ workflow }) {
   const [showChat, setShowChat] = useState(false);
 
   const { nodeTypes: availableNodeTypes } = useNodeTypes();
-  const reactFlowWrapper = useRef(null);
+  const reactFlowWrapper = useRef(null);  
 
   useEffect(() => {
     try {
@@ -148,6 +150,19 @@ export default function WorkFlow({ workflow }) {
     setShowChat(false);
   }
 
+  const sendChat = async (message) => {
+    debugger
+    try {
+      const flow = await askToClaude(message, workflow);
+      if (flow.nodes) setNodes(flow.nodes);
+      if (flow.edges) setEdges(flow.edges);
+      if (flow.viewport) setViewport(flow.viewport);
+    } catch (error) {
+      console.error('Error loading flow:', error);
+    }
+
+  }
+
   return (
     <div ref={reactFlowWrapper} className='flex w-[calc(100vw-270px)] h-[calc(100vh-120px)]' style={{ position: 'relative' }}>
       <PortTypeLegend />
@@ -181,7 +196,7 @@ export default function WorkFlow({ workflow }) {
       >
         <Forum/>
       </IconButton>
-      {showChat && (<FloatingChat triggerMinimize={minimizeFloatingChat} />)}
+      {showChat && (<FloatingChat triggerMinimize={minimizeFloatingChat} sendChat={sendChat} />)}
     </div>
   );
 }
