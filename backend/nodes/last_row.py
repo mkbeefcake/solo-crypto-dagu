@@ -2,7 +2,7 @@
 import argparse
 
 NODE_DEF = {
-    "name": "Last Row",
+    "label": "Last Row",
     "inputs": [{"name": "text", "type": "string"}],
     "midputs": [],
     "outputs": [{"name": "last_item", "type": "string"}]

@@ -28,7 +28,7 @@ class Port(BaseModel):
     type: PortType = Field(..., description="Data type")
 
 class NodeDefinition(BaseModel):
-    name: str = Field(..., description="Node name")
+    label: str = Field(..., description="Node name")
     inputs: List[Port] = Field(default_factory=list, description="Input ports")
     outputs: List[Port] = Field(default_factory=list, description="Output ports")
     midputs: List[Port] = Field(default_factory=list, description="User parameters")
@@ -72,7 +72,7 @@ def discover_nodes() -> list[NodeDefinition]:
             if hasattr(module, "NODE_DEF"):
                 node_def = module.NODE_DEF
                 nodes.append(NodeDefinition(
-                    name=node_def["name"],
+                    label=node_def["label"],
                     inputs=[_port_from_dict(p) for p in node_def.get("inputs", [])],
                     midputs=[_port_from_dict(p) for p in node_def.get("midputs", [])],
                     outputs=[_port_from_dict(p) for p in node_def.get("outputs", [])]

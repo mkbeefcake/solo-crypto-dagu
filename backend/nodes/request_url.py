@@ -3,7 +3,7 @@ import requests
 import argparse
 
 NODE_DEF = {
-    "name": "URL Request",
+    "label": "URL Request",
     "inputs": [],
     "midputs": [{"name": "url", "label":"Enter url", "type": "string"}],
     "outputs": [{"name": "content", "type": "string"}]

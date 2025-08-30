@@ -8,6 +8,7 @@ import anthropic
 from node_definitions import NODE_DEFINITIONS
 from langsmith import traceable
 from langsmith.wrappers import wrap_anthropic
+from fastapi.encoders import jsonable_encoder
 
 load_dotenv()
 
@@ -39,20 +40,21 @@ You are an assistant that creates or modifies React Flow JSON graphs.
      - Simple two-node flow with one edge
      {{
        "nodes": [
-         {{ "id": "node_1", "type": "input", "data": {{ "label": "Start" }}, "position": {{ "x": 100, "y": 100 }} }},
-         {{ "id": "node_2", "data": {{ "label": "End" }}, "position": {{ "x": 400, "y": 100 }} }}
+         {{ "id": "node_1", "type": "general", "data": {{ "label": "Start", "inputs": [], "midputs":[], "outputs":[{{"name": "content", "type": "string"}}] }}, "position": {{ "x": 100, "y": 100 }} }},
+         {{ "id": "node_2", "type": "general", "data": {{ "label": "End", "inputs": [{{"name": "text", "type": "string"}}], "midputs":[], "outputs":[] }}, "position": {{ "x": 400, "y": 100 }} }}
        ],
        "edges": [
-         {{ "id": "edge_1-2", "source": "node_1", "target": "node_2" }}
+         {{ "id": "edge_1-2", "source": "node_1", "target": "node_2", "sourceHandle": "output-0", "targetHandle": "input-0" }}
        ]
      }}
   3. Preserve existing fields unless explicitly changed.
   4. Ensure schema is valid for React Flow: `nodes` (with id, data, position) and `edges`.
+  5. Ensure data fields match the following node definitions exactly.
 
 User Request:
 {user_request}
 
-Node Definitions: {NODE_DEFINITIONS}
+Each Node's data field schema definitions: {json.dumps(jsonable_encoder(NODE_DEFINITIONS))}
 
 Current JSON (can be empty or null):
 {current_json}

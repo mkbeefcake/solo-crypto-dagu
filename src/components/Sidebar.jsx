@@ -2,8 +2,6 @@ import { useDnD } from './DnDContext';
 import { useNodeTypes } from '../hooks/useNodeTypes';
 import './Sidebar.css';
 
-import Button from "@mui/material/Button";
-
 export default function Sidebar() {
   const [_, setType] = useDnD();
   const { nodeTypes, loading, error } = useNodeTypes();
@@ -37,12 +35,12 @@ export default function Sidebar() {
         
         {nodeTypes.map((nodeType) => (
           <div 
-            key={nodeType.name}
+            key={nodeType.label}
             className="dndnode" 
-            onDragStart={(event) => onDragStart(event, nodeType.name)} 
+            onDragStart={(event) => onDragStart(event, nodeType.label)} 
             draggable
           >
-            {nodeType.name}
+            {nodeType.label}
           </div>
         ))}
       </div>

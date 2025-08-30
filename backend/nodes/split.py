@@ -2,7 +2,7 @@
 import argparse
 
 NODE_DEF = {
-    "name": "Split",
+    "label": "Split",
     "inputs": [{"name": "text", "type": "string"}],
     "midputs": [{"name": "text", "label": "Enter text to split (use , for delimiter)", "type": "string"}],
     "outputs": [{"name": "items", "type": "list"}]

@@ -113,6 +113,7 @@ export default function WorkFlow({ workflow }) {
       console.log('OnDrop event:', event);
       event.preventDefault();
 
+      debugger
       if (!type) {
         return;
       }
@@ -122,7 +123,7 @@ export default function WorkFlow({ workflow }) {
         y: event.clientY,
       });
       
-      const nodeDefinition = availableNodeTypes.find(nt => nt.name === type);
+      const nodeDefinition = availableNodeTypes.find(nt => nt.label === type);
       if (!nodeDefinition) return;
 
       const newNode = {
@@ -130,7 +131,7 @@ export default function WorkFlow({ workflow }) {
         type: 'general',
         position,
         data: {
-          label: nodeDefinition.name,
+          label: nodeDefinition.label,
           inputs: nodeDefinition.inputs || [],
           outputs: nodeDefinition.outputs || [],
           midputs: nodeDefinition.midputs || []
@@ -151,9 +152,9 @@ export default function WorkFlow({ workflow }) {
   }
 
   const sendChat = async (message) => {
-    debugger
     try {
       const flow = await askToClaude(message, workflow);
+      debugger
       if (flow.nodes) setNodes(flow.nodes);
       if (flow.edges) setEdges(flow.edges);
       if (flow.viewport) setViewport(flow.viewport);
