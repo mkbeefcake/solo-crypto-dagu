@@ -40,7 +40,6 @@ export const WorkflowProvider = ({ children }) => {
   // Save workflow to backend
   const saveWorkflow = async (workflow) => {
     try {
-      debugger
       if (workflow.id) {
         await axios.put(`/api/workflows/${workflow.id}`, workflow);
       } else {
@@ -89,6 +88,7 @@ export const WorkflowProvider = ({ children }) => {
   // Load All workflows from backend
   const loadAllWorkflows = async (id) => {
     try {
+      debugger;
       const res = await axios.get(`/api/workflows`);
       setWorkflows(res.data);
       setActiveWorkflowId(res.data[0]?.id);
@@ -107,6 +107,7 @@ export const WorkflowProvider = ({ children }) => {
         setActiveWorkflowId,
         saveWorkflow,
         loadWorkflow,
+        deleteWorkflow,
         loadAllWorkflows,
         askToClaude
       }}

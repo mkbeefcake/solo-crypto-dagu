@@ -33,6 +33,7 @@ export function FlowControl({
 
   const handleClickDelete = (e) => {    
     e.preventDefault();
+    onDelete();
   };
 
   const handleClose = (confirmed) => {

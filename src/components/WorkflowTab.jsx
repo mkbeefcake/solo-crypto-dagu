@@ -13,9 +13,7 @@ import { useWorkflow } from "./WorkFlowContext";
 export default function WorkflowTab( { }) {
 
   const [value, setValue] = React.useState();
-  const { workflows, saveWorkflow, activeWorkflow } = useWorkflow()
-
-  console.log(`activeWorkflow: ${JSON.stringify(activeWorkflow)}`)
+  const { workflows, saveWorkflow, activeWorkflow, loadAllWorkflows} = useWorkflow()
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -35,18 +33,25 @@ export default function WorkflowTab( { }) {
     })
   );
 
+  React.useEffect(() => {
+    if (workflows.length > 0 && !value) {
+      setValue(workflows[0].id);
+    }
+  }, [workflows]);
+
   return (
     <div>
       <div className="top-container">
         <Box sx={{ width: "100%", typography: "body1" }}>
-          <TabContext value={activeWorkflow?.id}>
+          <TabContext 
+            value={value}
+            >
             <Box className="flex flex-column" sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
                 onChange={handleChange}
                 variant="scrollable"
                 scrollButtons="auto"
                 aria-label="lab API tabs example"
-                value={activeWorkflow?.id}
               >
                 {
                   workflows.map((workflow, index) => (

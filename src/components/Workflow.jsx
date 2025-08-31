@@ -21,7 +21,7 @@ const initialEdges = [];
  
 export default function WorkFlow({ workflow, id, name }) {
   const { getNodes, getEdges, getViewport, setViewport, screenToFlowPosition } = useReactFlow();
-  const { askToClaude, saveWorkflow, deleteWorkflow } = useWorkflow();
+  const { askToClaude, saveWorkflow, deleteWorkflow, loadAllWorkflows } = useWorkflow();
   const [type] = useDnD();
 
   const [nodes, setNodes] = useState(initialNodes);
@@ -65,9 +65,11 @@ export default function WorkFlow({ workflow, id, name }) {
 
   }
 
-  const onDelete = () =>{
-
-  }
+  const onDelete = useCallback(async () =>{
+    await deleteWorkflow(id);
+    await loadAllWorkflows();
+    alert("Deleted successfully!");
+  }, []);
 
   const onSave = useCallback(async () => {
     const flow = {
