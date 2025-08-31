@@ -76,5 +76,89 @@
       ],
       "viewports": []
     }
+  },
+  {
+    "id": "ccbb2c67-0d84-4979-abcd-8bbd7c06243a",
+    "name": "Untitled",
+    "flow": {
+      "nodes": [
+        {
+          "id": "node_1756608816142",
+          "type": "general",
+          "position": {
+            "x": 224,
+            "y": 104.19999694824219
+          },
+          "data": {
+            "label": "Split",
+            "inputs": [
+              {
+                "name": "text",
+                "label": null,
+                "type": "string"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "items",
+                "label": null,
+                "type": "list"
+              }
+            ],
+            "midputs": [
+              {
+                "name": "text",
+                "label": "Enter text to split (use , for delimiter)",
+                "type": "string"
+              }
+            ]
+          },
+          "measured": {
+            "width": 191,
+            "height": 61
+          }
+        },
+        {
+          "id": "node_1756608817653",
+          "type": "general",
+          "position": {
+            "x": 340.5,
+            "y": 24.29999542236328
+          },
+          "data": {
+            "label": "Last Row",
+            "inputs": [
+              {
+                "name": "text",
+                "label": null,
+                "type": "string"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "last_item",
+                "label": null,
+                "type": "string"
+              }
+            ],
+            "midputs": []
+          },
+          "measured": {
+            "width": 73,
+            "height": 40
+          }
+        }
+      ],
+      "edges": [
+        {
+          "source": "node_1756608817653",
+          "sourceHandle": "output-0",
+          "target": "node_1756608816142",
+          "targetHandle": "input-0",
+          "id": "xy-edge__node_1756608817653output-0-node_1756608816142input-0"
+        }
+      ],
+      "viewports": []
+    }
   }
 ]

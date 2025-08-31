@@ -90,6 +90,7 @@ export default function WorkFlow({ workflow, id, name }) {
 
     console.log(`Saving workflow: ${JSON.stringify(newWorkflow)}`);
     await saveWorkflow(newWorkflow);
+    await loadAllWorkflows();
     alert('Saved successfully!');
 
     // Save to File code 
