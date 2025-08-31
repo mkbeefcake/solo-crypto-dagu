@@ -2,6 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import IconButton from '@mui/material/IconButton';
+import { TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -13,7 +14,34 @@ import { useWorkflow } from "./WorkFlowContext";
 export default function WorkflowTab( { }) {
 
   const [value, setValue] = React.useState();
+  const [editingTab, setEditingTab] = React.useState(null);
+  const [editValue, setEditValue] = React.useState("");  
   const { workflows, saveWorkflow, activeWorkflow, loadAllWorkflows} = useWorkflow()
+
+  const handleDoubleClick = (workflow, index) => {
+    setEditingTab(index);
+    setEditValue(workflow.name);
+  };
+
+  const handleEditChange = (e) => {
+    setEditValue(e.target.value);
+  };
+
+  const handleEditSubmit = async (index) => {
+    debugger
+    workflows[index].name = editValue || "Untitled";
+    await saveWorkflow(workflows[index]);
+    await loadAllWorkflows();
+    setEditingTab(null);    
+    setEditValue("");
+  };
+
+  const handleKeyPress = (e, index) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleEditSubmit(index);
+    }
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -57,8 +85,29 @@ export default function WorkflowTab( { }) {
                   workflows.map((workflow, index) => (
                     <CustomTab 
                       key={`tab-${workflow.id}`} 
-                      label={workflow.name} 
-                      value={workflow.id} />
+                      label={
+                        editingTab === index ? (
+                          <TextField
+                            value={editValue}
+                            onChange={handleEditChange}
+                            onBlur={() => handleEditSubmit(index)}
+                            onKeyPress={(e) => handleKeyPress(e, index)}
+                            size="small"
+                            autoFocus
+                          />
+                        ) : (
+                          <Box
+                            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                            onDoubleClick={() => handleDoubleClick(workflow, index)}
+                          >
+                            {workflow.name}
+                          </Box>
+                        )
+                      } 
+                      value={workflow.id} 
+
+
+                    />
                   ))
                 }
               </TabList>
