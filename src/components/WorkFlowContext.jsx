@@ -68,6 +68,23 @@ export const WorkflowProvider = ({ children }) => {
     }
   };
 
+    // delete workflow from backend
+  const deleteWorkflow = async (id) => {
+    try {
+      const res = await axios.delete(`/api/workflows/${id}`);
+      setWorkflows((prev) => {
+        const exists = prev.find((w) => w.id === id);
+        return exists
+          ? prev.filter((w) => w.id !== id)
+          : prev;
+      });
+      setActiveWorkflowId(workflows[0]?.id);
+    } catch (err) {
+      console.error("loadWorkFlow failed:", err);
+    }
+  };
+
+
   // Load All workflows from backend
   const loadAllWorkflows = async (id) => {
     try {
@@ -76,8 +93,8 @@ export const WorkflowProvider = ({ children }) => {
       setActiveWorkflowId(res.data[0]?.id);
     } catch (err) {
       console.error("loadAllWorkFlows failed:", err);
-      setWorkflows(initWorkFlows)
-      setActiveWorkflowId(initWorkFlows[0]?.id);
+      // setWorkflows(initWorkFlows)
+      // setActiveWorkflowId(initWorkFlows[0]?.id);
     }
   };
 

@@ -19,9 +19,9 @@ const nodeTypes = {
 const initialNodes = [];
 const initialEdges = [];
  
-export default function WorkFlow({ workflow }) {
+export default function WorkFlow({ workflow, id, name }) {
   const { getNodes, getEdges, getViewport, setViewport, screenToFlowPosition } = useReactFlow();
-  const { askToClaude } = useWorkflow();
+  const { askToClaude, saveWorkflow, deleteWorkflow } = useWorkflow();
   const [type] = useDnD();
 
   const [nodes, setNodes] = useState(initialNodes);
@@ -33,6 +33,7 @@ export default function WorkFlow({ workflow }) {
 
   useEffect(() => {
     try {
+      if (!workflow) return;
       setNodes(workflow.nodes??[])
       setEdges(workflow.edges??[])
       setViewport(workflow.viewport??[])
@@ -60,30 +61,46 @@ export default function WorkFlow({ workflow }) {
     [nodes],
   );
 
-  const onExecute = useCallback(() => {
+  const onExecute = () => {
 
-  }, [])
+  }
 
-  const onDelete = useCallback(() =>{
+  const onDelete = () =>{
 
-  }, [])
+  }
 
-  const onSave = useCallback(() => {
+  const onSave = async () => {
     const flow = {
       nodes: getNodes(),
       edges: getEdges(),
       viewport: getViewport(),
     };
+
+    const newWorkflow = {
+      id: id,
+      name: name,
+      flow: {
+        nodes: flow.nodes,
+        edges: flow.edges,
+        viewport: flow.viewport
+      }
+    }
+
+    console.log(`Saving workflow: ${JSON.stringify(newWorkflow)}`);
+    await saveWorkflow(newWorkflow);
+    alert('Saved successfully!');
+
+    // Save to File code 
     
-    const dataStr = JSON.stringify(flow, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'flow.json';
-    link.click();
-    URL.revokeObjectURL(url);
-  }, [getNodes, getEdges, getViewport]);
+    // const dataStr = JSON.stringify(flow, null, 2);
+    // const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    // const url = URL.createObjectURL(dataBlob);
+    // const link = document.createElement('a');
+    // link.href = url;
+    // link.download = 'flow.json';
+    // link.click();
+    // URL.revokeObjectURL(url);
+  };
 
   const onLoad = useCallback((file) => {
     if (file) {
@@ -103,17 +120,13 @@ export default function WorkFlow({ workflow }) {
   }, [setNodes, setEdges, setViewport]);
 
   const onDragOver = useCallback((event) => {
-    console.log('OnDragOver event:', event);
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
   const onDrop = useCallback(
     (event) => {
-      console.log('OnDrop event:', event);
       event.preventDefault();
-
-      debugger
       if (!type) {
         return;
       }
@@ -154,7 +167,6 @@ export default function WorkFlow({ workflow }) {
   const sendChat = async (message) => {
     try {
       const flow = await askToClaude(message, workflow);
-      debugger
       if (flow.nodes) setNodes(flow.nodes);
       if (flow.edges) setEdges(flow.edges);
       if (flow.viewport) setViewport(flow.viewport);
@@ -167,7 +179,11 @@ export default function WorkFlow({ workflow }) {
   return (
     <div ref={reactFlowWrapper} className='flex w-[calc(100vw-270px)] h-[calc(100vh-120px)]' style={{ position: 'relative' }}>
       <PortTypeLegend />
-      <FlowControl onLoad={onLoad} onSave={onSave} onDelete={onDelete} onExecute={onExecute} />
+      <FlowControl 
+        onLoad={onLoad} 
+        onSave={onSave} 
+        onDelete={onDelete} 
+        onExecute={onExecute} />
       <ReactFlow
         nodes={nodes}
         edges={edges}

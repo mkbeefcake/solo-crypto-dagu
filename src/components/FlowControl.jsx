@@ -15,15 +15,24 @@ import {
 
 export function FlowControl({ 
   onLoad,
-  onSave,
+  onDelete,
   onExecute,
-  onDelete
+  onSave
 }) {
   const fileInputRef = useRef(null);
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickSave = (e) => {    
+    e.preventDefault();
+    onSave();
+  };
+
+  const handleClickPlay = (e) => {    
+    e.preventDefault();
+  };
+
+  const handleClickDelete = (e) => {    
+    e.preventDefault();
   };
 
   const handleClose = (confirmed) => {
@@ -34,12 +43,13 @@ export function FlowControl({
       console.log("❌ User canceled action");
     }
   };
-  const handleFileChange = useCallback((event) => {
+  
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && onLoad) {
       onLoad(file);
     }
-  }, [onLoad]);
+  };
 
   const onclickImport = (e) => {
     fileInputRef.current.click();
@@ -56,19 +66,19 @@ export function FlowControl({
         spacing={2}>
 
         <Tooltip title="Play">
-          <IconButton color="primary" onClick={onExecute}>
+          <IconButton color="primary" onClick={handleClickPlay}>
             <PlayArrowIcon />
           </IconButton>
         </Tooltip>
 
         <Tooltip title="Delete">
-          <IconButton color="error" onClick={onDelete}>
+          <IconButton color="error" onClick={handleClickDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
 
         <Tooltip title="Save">
-          <IconButton color="success" onClick={onSave}>
+          <IconButton color="success" onClick={handleClickSave}>
             <SaveIcon />
           </IconButton>
         </Tooltip>

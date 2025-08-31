@@ -5,17 +5,26 @@ import json
 import os
 import requests
 import anthropic
+import uuid
 from node_definitions import NODE_DEFINITIONS
 from langsmith import traceable
 from langsmith.wrappers import wrap_anthropic
 from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
+from typing import List, Dict, Any, Optional
+from lib.workflow.helper import load_workflows, save_workflows
+
 
 load_dotenv()
 
 router = APIRouter(prefix="", tags=["workflow"])
-
-
 client = wrap_anthropic(anthropic.Anthropic(api_key=os.getenv("CLAUDE_API_KEY")))
+
+class Workflow(BaseModel):
+    id: Optional[str] = None
+    name: Optional[str] = None
+    nodes: List[Dict[str, Any]] = []
+    edges: List[Dict[str, Any]] = []
 
 @traceable
 @router.post("/workflow/claude")
@@ -75,3 +84,45 @@ Return the updated or newly created JSON only:
         updated_json = {"error": "Claude returned invalid JSON", "raw": response.content[0].text}
 
     return {"updated_json": updated_json}
+
+
+@router.get("/workflows")
+def list_workflows():
+    return load_workflows()
+
+@router.get("/workflows/{workflow_id}")
+def get_workflow(workflow_id: str):
+    workflows = load_workflows()
+    for wf in workflows:
+        if wf["id"] == workflow_id:
+            return wf
+    raise HTTPException(status_code=404, detail="Workflow not found")
+
+@router.post("/workflows")
+def create_workflow(workflow: Workflow):
+    workflows = load_workflows()
+    workflow.id = str(uuid.uuid4())
+    workflows.append(workflow.dict())
+    save_workflows(workflows)
+    return workflow
+
+@router.put("/workflows/{workflow_id}")
+def update_workflow(workflow_id: str, workflow: Workflow):
+    workflows = load_workflows()
+    for i, wf in enumerate(workflows):
+        if wf["id"] == workflow_id:
+            # overwrite with new content
+            workflow.id = workflow_id
+            workflows[i] = workflow.dict()
+            save_workflows(workflows)
+            return workflow
+    raise HTTPException(status_code=404, detail="Workflow not found")
+
+@router.delete("/workflows/{workflow_id}")
+def delete_workflow(workflow_id: str):
+    workflows = load_workflows()
+    new_workflows = [wf for wf in workflows if wf["id"] != workflow_id]
+    if len(new_workflows) == len(workflows):
+        raise HTTPException(status_code=404, detail="Workflow not found")
+    save_workflows(new_workflows)
+    return {"message": "Workflow deleted"}
