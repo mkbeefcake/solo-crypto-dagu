@@ -69,7 +69,7 @@ export default function WorkFlow({ workflow, id, name }) {
 
   }
 
-  const onSave = async () => {
+  const onSave = useCallback(async () => {
     const flow = {
       nodes: getNodes(),
       edges: getEdges(),
@@ -100,7 +100,7 @@ export default function WorkFlow({ workflow, id, name }) {
     // link.download = 'flow.json';
     // link.click();
     // URL.revokeObjectURL(url);
-  };
+  }, []);
 
   const onLoad = useCallback((file) => {
     if (file) {

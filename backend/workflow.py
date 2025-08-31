@@ -20,11 +20,15 @@ load_dotenv()
 router = APIRouter(prefix="", tags=["workflow"])
 client = wrap_anthropic(anthropic.Anthropic(api_key=os.getenv("CLAUDE_API_KEY")))
 
+class Flow(BaseModel):
+    nodes: List[Dict[str, Any]] = []
+    edges: List[Dict[str, Any]] = []
+    viewports: List[Dict[str, Any]] = []
+
 class Workflow(BaseModel):
     id: Optional[str] = None
     name: Optional[str] = None
-    nodes: List[Dict[str, Any]] = []
-    edges: List[Dict[str, Any]] = []
+    flow: Optional[Flow] = None
 
 @traceable
 @router.post("/workflow/claude")
@@ -109,6 +113,9 @@ def create_workflow(workflow: Workflow):
 @router.put("/workflows/{workflow_id}")
 def update_workflow(workflow_id: str, workflow: Workflow):
     workflows = load_workflows()
+    print(f"Updating workflow {workflow_id} with data: {workflow}")
+    print(f"original workflows: {workflows}")
+
     for i, wf in enumerate(workflows):
         if wf["id"] == workflow_id:
             # overwrite with new content

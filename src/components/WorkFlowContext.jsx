@@ -40,6 +40,7 @@ export const WorkflowProvider = ({ children }) => {
   // Save workflow to backend
   const saveWorkflow = async (workflow) => {
     try {
+      debugger
       if (workflow.id) {
         await axios.put(`/api/workflows/${workflow.id}`, workflow);
       } else {
