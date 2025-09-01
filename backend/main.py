@@ -8,10 +8,12 @@ from node_definitions import NODE_DEFINITIONS, NodeDefinition, PortType
 from mcp_tool import router as mcp_router
 from workflow import router as workflow_router
 from solomcp.server import mcp
+from fastapi.staticfiles import StaticFiles
 
 import uvicorn
 import asyncio
 import shutil
+import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -45,12 +47,10 @@ async def get_node_types():
 async def get_port_colors():
     return {port_type.value: port_type.color for port_type in PortType}
 
-@app.get("/")
-async def root():
-    return {"message": "Zoo-Scape Backend API"}
-
 app.include_router(mcp_router)
 app.include_router(workflow_router)
+
+app.mount("/", StaticFiles(directory="../dist", html=True), name="static")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
