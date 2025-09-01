@@ -1,15 +1,15 @@
 [
   {
-    "id": "82b3e560-3dff-4804-bfb9-74a74f0908b7",
-    "name": "Original workflow",
+    "id": "4613913b-d24f-4991-8645-4475c801e69b",
+    "name": "editedName",
     "flow": {
       "nodes": [
         {
-          "id": "node_1756604968115",
+          "id": "node_1756729338342",
           "type": "general",
           "position": {
-            "x": 305,
-            "y": 168.1999969482422
+            "x": 224.5,
+            "y": 151.6999969482422
           },
           "data": {
             "label": "URL Request",
@@ -25,139 +25,21 @@
               {
                 "name": "url",
                 "label": "Enter url",
-                "type": "string"
+                "type": "string",
+                "value": "https://www.google.com"
               }
-            ]
+            ],
+            "value": {}
           },
           "measured": {
-            "width": 191,
-            "height": 61
-          }
-        },
-        {
-          "id": "node_1756604969772",
-          "type": "general",
-          "position": {
-            "x": 373.75,
-            "y": 260.7999954223633
+            "width": 244,
+            "height": 92
           },
-          "data": {
-            "label": "Last Row",
-            "inputs": [
-              {
-                "name": "text",
-                "label": null,
-                "type": "string"
-              }
-            ],
-            "outputs": [
-              {
-                "name": "last_item",
-                "label": null,
-                "type": "string"
-              }
-            ],
-            "midputs": []
-          },
-          "measured": {
-            "width": 73,
-            "height": 40
-          }
+          "selected": false,
+          "dragging": false
         }
       ],
-      "edges": [
-        {
-          "source": "node_1756604968115",
-          "sourceHandle": "output-0",
-          "target": "node_1756604969772",
-          "targetHandle": "input-0",
-          "id": "xy-edge__node_1756604968115output-0-node_1756604969772input-0"
-        }
-      ],
-      "viewports": []
-    }
-  },
-  {
-    "id": "ccbb2c67-0d84-4979-abcd-8bbd7c06243a",
-    "name": "Untitled",
-    "flow": {
-      "nodes": [
-        {
-          "id": "node_1756608816142",
-          "type": "general",
-          "position": {
-            "x": 224,
-            "y": 104.19999694824219
-          },
-          "data": {
-            "label": "Split",
-            "inputs": [
-              {
-                "name": "text",
-                "label": null,
-                "type": "string"
-              }
-            ],
-            "outputs": [
-              {
-                "name": "items",
-                "label": null,
-                "type": "list"
-              }
-            ],
-            "midputs": [
-              {
-                "name": "text",
-                "label": "Enter text to split (use , for delimiter)",
-                "type": "string"
-              }
-            ]
-          },
-          "measured": {
-            "width": 191,
-            "height": 61
-          }
-        },
-        {
-          "id": "node_1756608817653",
-          "type": "general",
-          "position": {
-            "x": 340.5,
-            "y": 24.29999542236328
-          },
-          "data": {
-            "label": "Last Row",
-            "inputs": [
-              {
-                "name": "text",
-                "label": null,
-                "type": "string"
-              }
-            ],
-            "outputs": [
-              {
-                "name": "last_item",
-                "label": null,
-                "type": "string"
-              }
-            ],
-            "midputs": []
-          },
-          "measured": {
-            "width": 73,
-            "height": 40
-          }
-        }
-      ],
-      "edges": [
-        {
-          "source": "node_1756608817653",
-          "sourceHandle": "output-0",
-          "target": "node_1756608816142",
-          "targetHandle": "input-0",
-          "id": "xy-edge__node_1756608817653output-0-node_1756608816142input-0"
-        }
-      ],
+      "edges": [],
       "viewports": []
     }
   }

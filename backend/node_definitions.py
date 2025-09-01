@@ -32,7 +32,7 @@ class NodeDefinition(BaseModel):
     inputs: List[Port] = Field(default_factory=list, description="Input ports")
     outputs: List[Port] = Field(default_factory=list, description="Output ports")
     midputs: List[Port] = Field(default_factory=list, description="User parameters")
-    
+    value: dict = Field(default_factory=dict, description="node value") 
     class Config:
         use_enum_values = True
 

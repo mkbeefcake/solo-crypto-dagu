@@ -5,7 +5,8 @@ NODE_DEF = {
     "label": "List Select",
     "inputs": [{"name": "list_data", "type": "list"}],
     "midputs": [{"name": "index", "label": "Enter index (0-based)", "type": "int"}],
-    "outputs": [{"name": "selected_item", "type": "string"}]
+    "outputs": [{"name": "selected_item", "type": "string"}],
+    "value": {}
 }
 
 def main() -> str:

@@ -4,8 +4,9 @@ import argparse
 NODE_DEF = {
     "label": "Split",
     "inputs": [{"name": "text", "type": "string"}],
-    "midputs": [{"name": "text", "label": "Enter text to split (use , for delimiter)", "type": "string"}],
-    "outputs": [{"name": "items", "type": "list"}]
+    "midputs": [{"name": "text", "label": "Enter text to split (use , for delimiter)", "type": "string", "value": ""}],
+    "outputs": [{"name": "items", "type": "list"}],
+    "value": {}
 }
 
 def main() -> str:

@@ -1,19 +1,23 @@
 import { Handle, Position, useUpdateNodeInternals } from '@xyflow/react';
-import { useEffect } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { usePortColors } from '../contexts/PortColorContext';
+import { TextField } from "@mui/material";
+
 import './GeneralNode.css';
 
-export function GeneralNode({ id, data }) {
+export function GeneralNode({ id, data, onMidputChange }) {
+ 
   const {
-    label = 'General Node',
+    label,
     inputs = [],
+    midputs = [],
     outputs = [],
-    midputs = []
-  } = data;
-  
+  } = data
+
+
   const typeColors = usePortColors();
   const updateNodeInternals = useUpdateNodeInternals();
-  
+
   useEffect(() => {
     updateNodeInternals(id);
   }, [id, inputs.length, outputs.length, midputs.length, updateNodeInternals]);
@@ -30,10 +34,19 @@ export function GeneralNode({ id, data }) {
               {/* <label className="midput-label">
                 {midput.name || `Input ${index + 1}`}:
               </label> */}
-              <input
+              {/* <input
                 type="text"
                 className="midput-input"
                 placeholder={`${midput.label}`}
+              /> */}
+              <TextField
+                key={midput.name}
+                label={midput.label || ''}
+                value={midput.value || ''}
+                onChange={(e) => onMidputChange(id, midput.name, e.target.value)}
+                size="small"
+                fullWidth
+                margin="dense"
               />
             </div>
           ))}

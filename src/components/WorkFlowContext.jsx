@@ -88,7 +88,6 @@ export const WorkflowProvider = ({ children }) => {
   // Load All workflows from backend
   const loadAllWorkflows = async (id) => {
     try {
-      debugger;
       const res = await axios.get(`/api/workflows`);
       setWorkflows(res.data);
       setActiveWorkflowId(res.data[0]?.id);

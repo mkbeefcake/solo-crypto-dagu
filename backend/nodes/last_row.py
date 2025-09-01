@@ -5,7 +5,8 @@ NODE_DEF = {
     "label": "Last Row",
     "inputs": [{"name": "text", "type": "string"}],
     "midputs": [],
-    "outputs": [{"name": "last_item", "type": "string"}]
+    "outputs": [{"name": "last_item", "type": "string"}],
+    "value": {}
 }
 
 def main() -> str:

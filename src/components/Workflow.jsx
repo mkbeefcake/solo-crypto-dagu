@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { ReactFlow, Background, MiniMap,  applyNodeChanges, applyEdgeChanges, addEdge, useReactFlow, ReactFlowProvider, BaseEdge } from '@xyflow/react';
 import { GeneralNode } from './GeneralNode';
 import { FlowControl } from './FlowControl';
@@ -12,13 +12,14 @@ import { IconButton } from '@mui/material';
 import { ChatBubble, Forum } from '@mui/icons-material';
 import { useWorkflow } from './WorkFlowContext';
 
-const nodeTypes = {
-  general: GeneralNode,
-};
- 
+// const nodeTypes = {
+//   general: GeneralNode,
+// };
+
+
 const initialNodes = [];
 const initialEdges = [];
- 
+
 export default function WorkFlow({ workflow, id, name }) {
   const { getNodes, getEdges, getViewport, setViewport, screenToFlowPosition } = useReactFlow();
   const { askToClaude, saveWorkflow, deleteWorkflow, loadAllWorkflows } = useWorkflow();
@@ -30,8 +31,32 @@ export default function WorkFlow({ workflow, id, name }) {
 
   const { nodeTypes: availableNodeTypes } = useNodeTypes();
   const reactFlowWrapper = useRef(null);  
+  
+  const handleMidputChange = useCallback((nodeId, midputName, newValue) => {
+    setNodes((nds) =>
+      nds.map((node) =>
+        node.id === nodeId
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                midputs: node.data.midputs.map((m) =>
+                  m.name === midputName ? { ...m, value: newValue } : m
+                ),
+              },
+            }
+          : node
+      )
+    );
+  }, [setNodes]);
+
+  // Update midput values inside node.data
+  const nodeTypes = useMemo(() => ({ 
+    general: (props) => <GeneralNode {...props} onMidputChange={handleMidputChange} /> 
+  }), [handleMidputChange]);
 
   useEffect(() => {
+    debugger
     try {
       if (!workflow) return;
       setNodes(workflow.nodes??[])
@@ -41,10 +66,10 @@ export default function WorkFlow({ workflow, id, name }) {
     catch(err) {
       console.log(`Error occurs: ${err}`)
     }
-  }, [])
+  }, [name, id, workflow])
  
   const onNodesChange = useCallback(
-    (changes) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
+    (changes) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot) ),
     [],
   );
   const onEdgesChange = useCallback(
@@ -72,6 +97,7 @@ export default function WorkFlow({ workflow, id, name }) {
   }, []);
 
   const onSave = useCallback(async () => {
+    debugger
     const flow = {
       nodes: getNodes(),
       edges: getEdges(),
@@ -103,7 +129,7 @@ export default function WorkFlow({ workflow, id, name }) {
     // link.download = 'flow.json';
     // link.click();
     // URL.revokeObjectURL(url);
-  }, []);
+  }, [getNodes, getEdges, getViewport, id, name, saveWorkflow]);
 
   const onLoad = useCallback((file) => {
     if (file) {
@@ -150,7 +176,8 @@ export default function WorkFlow({ workflow, id, name }) {
           label: nodeDefinition.label,
           inputs: nodeDefinition.inputs || [],
           outputs: nodeDefinition.outputs || [],
-          midputs: nodeDefinition.midputs || []
+          midputs: nodeDefinition.midputs || [],
+          value: nodeDefinition.value || {},          
         },
       };
 

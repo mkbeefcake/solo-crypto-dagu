@@ -28,7 +28,6 @@ export default function WorkflowTab( { }) {
   };
 
   const handleEditSubmit = async (index) => {
-    debugger
     workflows[index].name = editValue || "Untitled";
     await saveWorkflow(workflows[index]);
     await loadAllWorkflows();
@@ -52,7 +51,7 @@ export default function WorkflowTab( { }) {
       name: `Untitled`, 
       flow: { nodes: [], edges: [] } 
     });
-    loadAllWorkflows();
+    await loadAllWorkflows();
   };
 
   const CustomTab = styled((props) => <Tab disableRipple {...props} />)(

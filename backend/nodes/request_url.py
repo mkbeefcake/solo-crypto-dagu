@@ -5,8 +5,9 @@ import argparse
 NODE_DEF = {
     "label": "URL Request",
     "inputs": [],
-    "midputs": [{"name": "url", "label":"Enter url", "type": "string"}],
-    "outputs": [{"name": "content", "type": "string"}]
+    "midputs": [{"name": "url", "label":"Enter url", "type": "string", "value": ""}],
+    "outputs": [{"name": "content", "type": "string"}],
+    "value": {}
 }
 
 def main() -> str:
