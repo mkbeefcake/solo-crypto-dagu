@@ -26,7 +26,7 @@
                 "name": "url",
                 "label": "Enter url",
                 "type": "string",
-                "value": "https://www.google.com"
+                "value": "https://static.dwcdn.net/data/kSCt4.csv"
               }
             ],
             "value": {}

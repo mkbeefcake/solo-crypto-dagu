@@ -62,6 +62,13 @@ def get_imported_packages(file_path):
             if node.module:
                 packages.add(node.module.split(".")[0])
 
+    if "os" in packages:
+        packages.remove("os")
+    if "sys" in packages:
+        packages.remove("sys")
+    if "ast" in packages:
+        packages.remove("ast")
+        
     return list(packages)
 
 def run_sandboxed_script(file_path: str, func_name: str, kwargs: dict):
@@ -72,6 +79,9 @@ def run_sandboxed_script(file_path: str, func_name: str, kwargs: dict):
     # Get imported packages
     packages = get_imported_packages(file_path)
 
+    if not os.path.exists(temp_venv_directory):
+        os.makedirs(temp_venv_directory)
+        
     # Create a temporary virtual environment
     venv_dir = os.path.join(temp_venv_directory, "_venv_")
     subprocess.run([sys.executable, "-m", "venv", venv_dir], check=True)

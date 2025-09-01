@@ -16,7 +16,12 @@ def main() -> str:
     args = parser.parse_args()
     
     try:           
-        response = requests.get(args.url)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; MyBot/1.0; +https://example.com)"
+        }
+
+        response = requests.get(args.url, headers=headers, timeout=10)
+        response.raise_for_status()  #  raise error for bad status codes
         content = response.text
     except Exception as e:
         content = f"Error fetching URL: {e}"

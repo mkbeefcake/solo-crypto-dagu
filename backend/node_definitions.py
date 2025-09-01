@@ -32,7 +32,6 @@ class NodeDefinition(BaseModel):
     inputs: List[Port] = Field(default_factory=list, description="Input ports")
     outputs: List[Port] = Field(default_factory=list, description="Output ports")
     midputs: List[Port] = Field(default_factory=list, description="User parameters")
-    value: dict = Field(default_factory=dict, description="node value") 
     class Config:
         use_enum_values = True
 
@@ -53,7 +52,7 @@ def get_node_path(node_name: str):
 
         with open(f"nodes/{py_file.name}", "r") as f:
             file_content = f.read()
-            if f"\"name\": \"{node_name}\"" in file_content:
+            if f"\"label\": \"{node_name}\"" in file_content:
                 return f"nodes/{py_file.name}"
                 
     return ""

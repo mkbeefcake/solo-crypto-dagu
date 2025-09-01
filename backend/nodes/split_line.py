@@ -3,7 +3,7 @@ import argparse
 
 NODE_DEF = {
     "label": "Split text into lines",
-    "inputs": [{"name": "text", "type": "string"}],
+    "inputs": [{"name": "data", "type": "string"}],
     "midputs": [],
     "outputs": [{"name": "items", "type": "list"}],
     "value": {}
@@ -15,7 +15,7 @@ def main() -> str:
     args = parser.parse_args()
     
     # Split into lines and strip whitespace
-    items = [line.strip() for line in args.text.splitlines() if line.strip()]        
+    items = [line.strip() for line in args.data.splitlines() if line.strip()]        
     
     print(items)
     return items

@@ -22,8 +22,25 @@ class WorkflowRunner:
         
         self.task_results = {}
 
+    def parse_kwargs_for_node(self, kwargs, node):
+       
+        # Extract from midputs (user-provided values)
+        for midput in node.get("midputs", []):
+            name = midput.get("name")
+            value = midput.get("value")
+            if name and value is not None:
+                kwargs[name] = value
 
-    def run_workflow(self, kwargs):
+        # Optionally extract from inputs too, if they carry values
+        # for inp in node.get("inputs", []):
+        #     name = inp.get("name")
+        #     value = inp.get("value")
+        #     if name and value is not None:
+        #         kwargs[name] = value
+
+        return kwargs
+
+    def run_workflow(self, kwargs = {}):
 
         source = ""
         target = ""
@@ -32,12 +49,20 @@ class WorkflowRunner:
         result = ""
 
         label = ""
+
+        # Extract workflow details
+        id = self.workflow["id"]
+        name = self.workflow["name"]
+        flow = self.workflow["flow"]
+
         # iterate source nodes
-        nodes = self.workflow["nodes"]
-        for edge in self.workflow.get("edges", []):
+        nodes = flow["nodes"]
+        for edge in flow.get("edges", []):
+            # detect source & target nodes
             source = edge["source"]
             target = edge["target"]
 
+            # find out source node
             node_source_path = ""
             for node in nodes:
                 if node["id"] == source:
@@ -45,8 +70,11 @@ class WorkflowRunner:
                     node_source_path = get_node_path(node["data"]["label"])
                     break
             
-            logger.info("run_sandboxed_script", label=label, node_source_path=node_source_path, kwargs=params)
+            # Log info
             if node_source_path != "":
+                params = self.parse_kwargs_for_node(params, node["data"])
+
+                logger.info("run_sandboxed_script:", label=label, node_source_path=node_source_path)
                 result = run_sandboxed_script(
                     file_path=node_source_path,
                     func_name="main",
@@ -55,7 +83,7 @@ class WorkflowRunner:
                 logger.info("output", result=result)
                 params = {"data": result}
 
-        # find out last node
+        # find out last node from last target variable
         node_source_path = ""
         for node in nodes:
             if node["id"] == target:
@@ -63,8 +91,11 @@ class WorkflowRunner:
                 node_source_path = get_node_path(node["data"]["label"])
                 break
 
-        logger.info("run_sandboxed_script", label=label, node_source_path=node_source_path, kwargs=params)
+        # Log info
         if node_source_path != "":
+            params = self.parse_kwargs_for_node(params, node["data"])
+
+            logger.info("run_sandboxed_script:", label=label, node_source_path=node_source_path)
             result = run_sandboxed_script(
                 file_path=node_source_path,
                 func_name="main",
@@ -73,7 +104,3 @@ class WorkflowRunner:
 
         logger.info("output", result=result)
         return result
-    
-            # result = self.run_node(node)
-            # self.task_results[task_id] = result.get()  # Wait for completion
-            # return self.task_results

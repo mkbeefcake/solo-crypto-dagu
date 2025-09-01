@@ -86,12 +86,13 @@ export const WorkflowProvider = ({ children }) => {
 
   const executeWorkflow = async (id) => {
     try {
-      const res = await axios.get(`/api/run-workflow/${id}`);
       debugger
+      const res = await axios.get(`/api/run-workflow/${id}`);
       return res.data;
     } catch (err) {
+      debugger
       console.error("runWorkflow failed:", err);
-      return { error: err.message };
+      return { error: `err.message\n ${err.response?.data?.detail}` };
     }
   }
 

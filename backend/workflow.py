@@ -6,6 +6,7 @@ import os
 import requests
 import anthropic
 import uuid
+import yaml
 from node_definitions import NODE_DEFINITIONS
 from langsmith import traceable
 from langsmith.wrappers import wrap_anthropic
@@ -13,7 +14,9 @@ from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 from lib.workflow.helper import load_workflows, save_workflows
-
+from lib.log.logger import logger
+from lib.variable import temp_venv_directory
+from lib.workflow.runner import WorkflowRunner
 
 load_dotenv()
 
@@ -91,7 +94,35 @@ Return the updated or newly created JSON only:
 
 @router.get("/run-workflow/{workflow_id}")
 def execute_workflow(workflow_id):
-    return {"message": f"{workflow_id} executed"}
+    # load specific workflow by id
+    workflows = load_workflows()
+    json_data = None
+    for wf in workflows:
+        if wf["id"] == workflow_id:
+            json_data = wf
+            break
+        
+    # save into yaml file and execute
+    yaml_str = yaml.dump(json_data, sort_keys=False, allow_unicode=True)
+
+    # for debug reason
+    # yaml_path = os.path.dirname(os.path.abspath(__file__))
+    # yaml_path = os.path.join(yaml_path, temp_venv_directory)
+    # yaml_path = os.path.join(yaml_path, "flow.yaml") 
+    # with open(yaml_path, "w") as ff:
+    #     ff.write(yaml_str)
+
+    # run WorkRunner
+    try:
+        runner = WorkflowRunner(yaml_str=yaml_str)
+        result = runner.run_workflow()
+        logger.info("Final workflow result", result=result)
+        return {"message": f"{result}"}
+
+    except Exception as e:
+        logger.error("Error run_workflow():", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Error executing workflow: {str(e)}")
+
 
 
 @router.get("/workflows")
