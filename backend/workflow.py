@@ -89,6 +89,10 @@ Return the updated or newly created JSON only:
 
     return {"updated_json": updated_json}
 
+@router.get("/run-workflow/{workflow_id}")
+def execute_workflow(workflow_id):
+    return {"message": f"{workflow_id} executed"}
+
 
 @router.get("/workflows")
 def list_workflows():

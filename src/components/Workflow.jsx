@@ -11,6 +11,14 @@ import FloatingChat from './FloatingChat';
 import { IconButton } from '@mui/material';
 import { ChatBubble, Forum } from '@mui/icons-material';
 import { useWorkflow } from './WorkFlowContext';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 // const nodeTypes = {
 //   general: GeneralNode,
@@ -22,16 +30,22 @@ const initialEdges = [];
 
 export default function WorkFlow({ workflow, id, name }) {
   const { getNodes, getEdges, getViewport, setViewport, screenToFlowPosition } = useReactFlow();
-  const { askToClaude, saveWorkflow, deleteWorkflow, loadAllWorkflows } = useWorkflow();
+  const { askToClaude, saveWorkflow, deleteWorkflow, executeWorkflow, loadAllWorkflows } = useWorkflow();
   const [type] = useDnD();
 
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
   const [showChat, setShowChat] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [result, setResult] = useState("");
 
   const { nodeTypes: availableNodeTypes } = useNodeTypes();
   const reactFlowWrapper = useRef(null);  
   
+  const handleClose = (confirmed) => {
+    setOpen(false);
+  };
+
   const handleMidputChange = useCallback((nodeId, midputName, newValue) => {
     setNodes((nds) =>
       nds.map((node) =>
@@ -56,7 +70,6 @@ export default function WorkFlow({ workflow, id, name }) {
   }), [handleMidputChange]);
 
   useEffect(() => {
-    debugger
     try {
       if (!workflow) return;
       setNodes(workflow.nodes??[])
@@ -86,9 +99,16 @@ export default function WorkFlow({ workflow, id, name }) {
     [nodes],
   );
 
-  const onExecute = () => {
-
-  }
+  const onExecute = useCallback(async () => {
+    const data = await executeWorkflow(id);
+    if (data.error) {
+      setResult(data.error);
+    }
+    else{
+      setResult(data.message);
+    }
+    setOpen(true);
+  }, []);
 
   const onDelete = useCallback(async () =>{
     await deleteWorkflow(id);
@@ -97,7 +117,6 @@ export default function WorkFlow({ workflow, id, name }) {
   }, []);
 
   const onSave = useCallback(async () => {
-    debugger
     const flow = {
       nodes: getNodes(),
       edges: getEdges(),
@@ -244,6 +263,26 @@ export default function WorkFlow({ workflow, id, name }) {
         <Forum/>
       </IconButton>
       {showChat && (<FloatingChat triggerMinimize={minimizeFloatingChat} sendChat={sendChat} />)}
+
+      <Dialog
+        open={open}
+        onClose={() => handleClose(false)}
+        aria-labelledby="confirm-dialog-title"
+        aria-describedby="confirm-dialog-description"
+      >
+        <DialogTitle id="confirm-dialog-title">Workflow Result</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-dialog-description">
+            {result}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose(true)} color="error" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 }

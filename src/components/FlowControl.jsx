@@ -4,14 +4,6 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import DeleteIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import SaveIcon from "@mui/icons-material/SaveOutlined";
 import ImportIcon from "@mui/icons-material/OpenInBrowserOutlined";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
 
 export function FlowControl({ 
   onLoad,
@@ -20,7 +12,6 @@ export function FlowControl({
   onSave
 }) {
   const fileInputRef = useRef(null);
-  const [open, setOpen] = useState(false);
 
   const handleClickSave = (e) => {    
     e.preventDefault();
@@ -29,6 +20,7 @@ export function FlowControl({
 
   const handleClickPlay = (e) => {    
     e.preventDefault();
+    onExecute();
   };
 
   const handleClickDelete = (e) => {    
@@ -36,14 +28,6 @@ export function FlowControl({
     onDelete();
   };
 
-  const handleClose = (confirmed) => {
-    setOpen(false);
-    if (confirmed) {
-      console.log("✅ User confirmed action");
-    } else {
-      console.log("❌ User canceled action");
-    }
-  };
   
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -96,28 +80,7 @@ export function FlowControl({
           onChange={handleFileChange}
           style={{ display: 'none' }}
         />
-      </Stack>    
-      <Dialog
-        open={open}
-        onClose={() => handleClose(false)}
-        aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-description"
-      >
-        <DialogTitle id="confirm-dialog-title">Confirm Action</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="confirm-dialog-description">
-            Are you sure you want to perform this action? This cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleClose(false)} color="inherit">
-            Cancel
-          </Button>
-          <Button onClick={() => handleClose(true)} color="error" autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </Stack>
     </>
   );
 }
