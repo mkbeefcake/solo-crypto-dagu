@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import argparse
+import ast
 
 NODE_DEF = {
-    "label": "Last Row",
-    "inputs": [{"name": "text", "type": "string"}],
+    "label": "Select last row",
+    "inputs": [{"name": "text", "type": "list"}],
     "midputs": [],
     "outputs": [{"name": "last_item", "type": "string"}],
     "value": {}
@@ -14,10 +15,16 @@ def main() -> str:
     parser.add_argument('--data', type=str, required=True, help='Input list data')
     args = parser.parse_args()
     
-    # Parse the input data (assuming it's a comma-separated list or similar format)
-    data_list = args.data.split(',') if args.data else []
-    last_item = data_list[-1].strip() if data_list else ""
+    try:
+        # Safely parse string like '["a", "b", "c"]' into a Python list
+        data_list = ast.literal_eval(args.data)
+        if not isinstance(data_list, list):
+            raise ValueError("Provided --data is not a list")
+    except Exception as e:
+        print(f"Error parsing input: {e}")
+        return ""
     
+    last_item = data_list[-1] if data_list else ""
     print(last_item)
     return last_item
 
