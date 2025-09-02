@@ -41,7 +41,7 @@ jobs:
       # Step 5: Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/solo/soloapp:${{ github.sha }}
+          docker build -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/solo/soloapp:${{ github.sha }} .
 
       # Step 6: Push Docker image to Artifact Registry
       - name: Push Docker image
