@@ -8,7 +8,7 @@
           "id": "node_1756729338342",
           "type": "general",
           "position": {
-            "x": 32.57636150563482,
+            "x": 30.0349772972001,
             "y": -7.028825772138816
           },
           "data": {
@@ -32,7 +32,7 @@
             "value": {}
           },
           "measured": {
-            "width": 244,
+            "width": 232,
             "height": 92
           },
           "selected": false,
@@ -49,7 +49,7 @@
             "label": "Split text into lines",
             "inputs": [
               {
-                "name": "text",
+                "name": "data",
                 "label": null,
                 "type": "string"
               }
@@ -65,7 +65,7 @@
             "value": {}
           },
           "measured": {
-            "width": 121,
+            "width": 123,
             "height": 40
           },
           "selected": false,
@@ -75,11 +75,11 @@
           "id": "node_1756732594154",
           "type": "general",
           "position": {
-            "x": 40.700935657267166,
-            "y": 215.07077936897983
+            "x": 114.5324505040922,
+            "y": 204.03848404704047
           },
           "data": {
-            "label": "Select index from list",
+            "label": "Select last row",
             "inputs": [
               {
                 "name": "text",
@@ -89,26 +89,19 @@
             ],
             "outputs": [
               {
-                "name": "selected_item",
+                "name": "last_item",
                 "label": null,
                 "type": "string"
               }
             ],
-            "midputs": [
-              {
-                "name": "index",
-                "label": "Enter index (0-based)",
-                "type": "int",
-                "value": "5"
-              }
-            ],
+            "midputs": [],
             "value": {}
           },
           "measured": {
-            "width": 244,
-            "height": 92
+            "width": 102,
+            "height": 40
           },
-          "selected": false,
+          "selected": true,
           "dragging": false
         }
       ],
