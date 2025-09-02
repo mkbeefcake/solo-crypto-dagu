@@ -9,7 +9,7 @@ env:
   PROJECT_ID: 'chat-automation-387710'
   REGION: 'us-central1'
   SERVICE: 'solo'
-  WORKLOAD_IDENTITY_PROVIDER: 'iam.googleapis.com/projects/1094964097817/locations/global/workloadIdentityPools/github-identity-pool/providers/github-provider'
+  WORKLOAD_IDENTITY_PROVIDER: '/projects/1094964097817/locations/global/workloadIdentityPools/github-identity-pool/providers/github-provider'
 
 jobs:
   deploy:
