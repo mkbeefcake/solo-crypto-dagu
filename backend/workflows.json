@@ -123,5 +123,127 @@
       ],
       "viewports": []
     }
+  },
+  {
+    "id": "ae1a1cd4-6b89-433a-ad4b-a7ba12c5d0a5",
+    "name": "test2",
+    "flow": {
+      "nodes": [
+        {
+          "id": "node_1",
+          "type": "general",
+          "data": {
+            "label": "URL Request",
+            "inputs": [],
+            "outputs": [
+              {
+                "name": "content",
+                "label": null,
+                "type": "string"
+              }
+            ],
+            "midputs": [
+              {
+                "name": "url",
+                "label": "Enter url",
+                "type": "string",
+                "value": "https://static.dwcdn.net/data/kSCt4.csv"
+              }
+            ]
+          },
+          "position": {
+            "x": 119.5,
+            "y": 4
+          },
+          "measured": {
+            "width": 244,
+            "height": 92
+          },
+          "selected": true,
+          "dragging": false
+        },
+        {
+          "id": "node_2",
+          "type": "general",
+          "data": {
+            "label": "Split text into lines",
+            "inputs": [
+              {
+                "name": "data",
+                "label": null,
+                "type": "string"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "items",
+                "label": null,
+                "type": "list"
+              }
+            ],
+            "midputs": []
+          },
+          "position": {
+            "x": 180.5,
+            "y": 124.5
+          },
+          "measured": {
+            "width": 121,
+            "height": 40
+          },
+          "selected": false,
+          "dragging": false
+        },
+        {
+          "id": "node_3",
+          "type": "general",
+          "data": {
+            "label": "Select last row",
+            "inputs": [
+              {
+                "name": "text",
+                "label": null,
+                "type": "list"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "last_item",
+                "label": null,
+                "type": "string"
+              }
+            ],
+            "midputs": []
+          },
+          "position": {
+            "x": 190.5,
+            "y": 190.5
+          },
+          "measured": {
+            "width": 102,
+            "height": 40
+          },
+          "selected": false,
+          "dragging": false
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge_1-2",
+          "source": "node_1",
+          "target": "node_2",
+          "sourceHandle": "output-0",
+          "targetHandle": "input-0"
+        },
+        {
+          "id": "edge_2-3",
+          "source": "node_2",
+          "target": "node_3",
+          "sourceHandle": "output-0",
+          "targetHandle": "input-0"
+        }
+      ],
+      "viewports": []
+    }
   }
 ]

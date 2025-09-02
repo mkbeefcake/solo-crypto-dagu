@@ -56,7 +56,7 @@ You are an assistant that creates or modifies React Flow JSON graphs.
      - Simple two-node flow with one edge
      {{
        "nodes": [
-         {{ "id": "node_1", "type": "general", "data": {{ "label": "Start", "inputs": [], "midputs":[], "outputs":[{{"name": "content", "type": "string"}}] }}, "position": {{ "x": 100, "y": 100 }} }},
+         {{ "id": "node_1", "type": "general", "data": {{ "label": "Start", "inputs": [], "midputs":[{{"name": "url", "label":"Enter url", "type": "string", "value": ""}}], "outputs":[{{"name": "content", "type": "string"}}] }}, "position": {{ "x": 100, "y": 100 }} }},
          {{ "id": "node_2", "type": "general", "data": {{ "label": "End", "inputs": [{{"name": "text", "type": "string"}}], "midputs":[], "outputs":[] }}, "position": {{ "x": 400, "y": 100 }} }}
        ],
        "edges": [
@@ -66,6 +66,7 @@ You are an assistant that creates or modifies React Flow JSON graphs.
   3. Preserve existing fields unless explicitly changed.
   4. Ensure schema is valid for React Flow: `nodes` (with id, data, position) and `edges`.
   5. Ensure data fields match the following node definitions exactly.
+  6. If the user provides values for a specific component, use them as the values for that component's midputs
 
 User Request:
 {user_request}
