@@ -39,11 +39,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/nodes/types", response_model=List[NodeDefinition])
+@app.get("/api/nodes/types", response_model=List[NodeDefinition])
 async def get_node_types():
     return NODE_DEFINITIONS
 
-@app.get("/port-colors")
+@app.get("/api/port-colors")
 async def get_port_colors():
     return {port_type.value: port_type.color for port_type in PortType}
 

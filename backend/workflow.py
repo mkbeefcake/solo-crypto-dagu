@@ -20,7 +20,7 @@ from lib.workflow.runner import WorkflowRunner
 
 load_dotenv()
 
-router = APIRouter(prefix="", tags=["workflow"])
+router = APIRouter(prefix="/api", tags=["workflow"])
 client = wrap_anthropic(anthropic.Anthropic(api_key=os.getenv("CLAUDE_API_KEY")))
 
 class Flow(BaseModel):
