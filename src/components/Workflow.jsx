@@ -38,6 +38,7 @@ export default function WorkFlow({ workflow, id, name }) {
   const [showChat, setShowChat] = useState(false);
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState("");
+  const [claudeFlowLoaded, setClaudeFlowLoaded] = useState(false);
 
   const { nodeTypes: availableNodeTypes } = useNodeTypes();
   const reactFlowWrapper = useRef(null);  
@@ -219,11 +220,24 @@ export default function WorkFlow({ workflow, id, name }) {
       if (flow.nodes) setNodes(flow.nodes);
       if (flow.edges) setEdges(flow.edges);
       if (flow.viewport) setViewport(flow.viewport);
+      setClaudeFlowLoaded(true);
     } catch (error) {
       console.error('Error loading flow:', error);
     }
-
   }
+
+  useEffect(() => {
+      if (claudeFlowLoaded) {
+        const runWorkflow = async () => {
+          setClaudeFlowLoaded(false);
+          await onSave();
+          await onExecute();
+        }
+        runWorkflow();
+      }
+
+  }, [claudeFlowLoaded, onSave, onExecute])
+
 
   return (
     <div ref={reactFlowWrapper} className='flex w-[calc(100vw-270px)] h-[calc(100vh-120px)]' style={{ position: 'relative' }}>

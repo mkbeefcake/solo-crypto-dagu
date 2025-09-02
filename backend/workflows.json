@@ -125,8 +125,8 @@
     }
   },
   {
-    "id": "ae1a1cd4-6b89-433a-ad4b-a7ba12c5d0a5",
-    "name": "test2",
+    "id": "c4918319-900a-411c-8a09-100b1949ad3d",
+    "name": "Untitled",
     "flow": {
       "nodes": [
         {
@@ -152,15 +152,9 @@
             ]
           },
           "position": {
-            "x": 119.5,
-            "y": 4
-          },
-          "measured": {
-            "width": 244,
-            "height": 92
-          },
-          "selected": true,
-          "dragging": false
+            "x": 100,
+            "y": 100
+          }
         },
         {
           "id": "node_2",
@@ -184,15 +178,9 @@
             "midputs": []
           },
           "position": {
-            "x": 180.5,
-            "y": 124.5
-          },
-          "measured": {
-            "width": 121,
-            "height": 40
-          },
-          "selected": false,
-          "dragging": false
+            "x": 400,
+            "y": 100
+          }
         },
         {
           "id": "node_3",
@@ -216,15 +204,9 @@
             "midputs": []
           },
           "position": {
-            "x": 190.5,
-            "y": 190.5
-          },
-          "measured": {
-            "width": 102,
-            "height": 40
-          },
-          "selected": false,
-          "dragging": false
+            "x": 700,
+            "y": 100
+          }
         }
       ],
       "edges": [

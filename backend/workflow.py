@@ -67,6 +67,7 @@ You are an assistant that creates or modifies React Flow JSON graphs.
   4. Ensure schema is valid for React Flow: `nodes` (with id, data, position) and `edges`.
   5. Ensure data fields match the following node definitions exactly.
   6. If the user provides values for a specific component, use them as the values for that component's midputs
+  7. For each edge, the output type of the source component must match the input type of the target component.
 
 User Request:
 {user_request}
@@ -87,7 +88,7 @@ Return the updated or newly created JSON only:
     )
 
     try:
-        updated_json = json.loads(response.content[0].text)
+        updated_json = json.loads(response.content[0].text)        
     except Exception:
         updated_json = {"error": "Claude returned invalid JSON", "raw": response.content[0].text}
 
