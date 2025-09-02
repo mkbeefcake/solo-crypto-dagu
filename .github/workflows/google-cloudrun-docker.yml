@@ -23,10 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - id: auth
+      - uses: google-github-actions/auth@v2
         name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+        id: auth
         with:
+          project_id: ${{ env.PROJECT_ID }}
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: "mkbeefcake@chat-automation-387710.iam.gserviceaccount.com"
 
@@ -37,11 +38,15 @@ jobs:
           password: ${{ steps.auth.outputs.auth_token }}
           registry: ${{ env.REGION }}-docker.pkg.dev
 
-      - name: Build and Push Container
+      # Step 5: Build Docker image
+      - name: Build Docker image
         run: |
-          DOCKER_TAG="${{ env.SERVICE }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" .
-          docker push "${DOCKER_TAG}"
+          docker build -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/solo/soloapp:${{ github.sha }}
+
+      # Step 6: Push Docker image to Artifact Registry
+      - name: Push Docker image
+        run: |
+          docker push us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/solo/soloapp:${{ github.sha }}
 
       - id: deploy
         name: Deploy to Cloud Run
@@ -49,7 +54,7 @@ jobs:
         with:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
-          image: ${{ env.SERVICE }}:${{ github.sha }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/soloapp:${{ github.sha }}
 
       - name: Show output
         run: |
