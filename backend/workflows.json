@@ -126,7 +126,7 @@
   },
   {
     "id": "bb07a161-bf38-4682-8882-914273ae0be2",
-    "name": "Untitled",
+    "name": "new ",
     "flow": {
       "nodes": [
         {
@@ -152,9 +152,15 @@
             ]
           },
           "position": {
-            "x": 100,
-            "y": 100
-          }
+            "x": 63,
+            "y": -20.225013732910156
+          },
+          "measured": {
+            "width": 232,
+            "height": 92
+          },
+          "selected": false,
+          "dragging": false
         },
         {
           "id": "node_2",
@@ -178,9 +184,15 @@
             "midputs": []
           },
           "position": {
-            "x": 300,
-            "y": 100
-          }
+            "x": 173,
+            "y": 108.5
+          },
+          "measured": {
+            "width": 123,
+            "height": 40
+          },
+          "selected": false,
+          "dragging": false
         },
         {
           "id": "node_3",
@@ -204,9 +216,15 @@
             "midputs": []
           },
           "position": {
-            "x": 500,
-            "y": 100
-          }
+            "x": 177,
+            "y": 168.5
+          },
+          "measured": {
+            "width": 102,
+            "height": 40
+          },
+          "selected": true,
+          "dragging": false
         }
       ],
       "edges": [

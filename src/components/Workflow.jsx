@@ -130,7 +130,7 @@ export default function WorkFlow({ workflow, id, name }) {
     setLoading(true);
     await handleDelete();
     setLoading(false);
-    alert("Deleted successfully!");
+    // alert("Deleted successfully!");
   }, []);
 
   // Handle Save button 
@@ -160,7 +160,7 @@ export default function WorkFlow({ workflow, id, name }) {
     setLoading(true);
     await handleSave();
     setLoading(false);
-    alert('Saved successfully!');
+    // alert('Saved successfully!');
 
     // Save to File code 
     
