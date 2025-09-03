@@ -19,6 +19,8 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 
 // const nodeTypes = {
 //   general: GeneralNode,
@@ -39,6 +41,7 @@ export default function WorkFlow({ workflow, id, name }) {
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState("");
   const [claudeFlowLoaded, setClaudeFlowLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { nodeTypes: availableNodeTypes } = useNodeTypes();
   const reactFlowWrapper = useRef(null);  
@@ -100,7 +103,8 @@ export default function WorkFlow({ workflow, id, name }) {
     [nodes],
   );
 
-  const onExecute = useCallback(async () => {
+  // Handle Execute button 
+  const handleExecute = async () => {
     const data = await executeWorkflow(id);
     if (data.error) {
       setResult(data.error);
@@ -109,15 +113,28 @@ export default function WorkFlow({ workflow, id, name }) {
       setResult(data.message);
     }
     setOpen(true);
+  }
+  const onExecute = useCallback(async () => {
+    setLoading(true);
+    await handleExecute();
+    setLoading(false);
   }, []);
 
-  const onDelete = useCallback(async () =>{
+  // Handle Delete button 
+  const handleDelete = async() => {
     await deleteWorkflow(id);
     await loadAllWorkflows();
+  }
+
+  const onDelete = useCallback(async () =>{
+    setLoading(true);
+    await handleDelete();
+    setLoading(false);
     alert("Deleted successfully!");
   }, []);
 
-  const onSave = useCallback(async () => {
+  // Handle Save button 
+  const handleSave = async () => {
     const flow = {
       nodes: getNodes(),
       edges: getEdges(),
@@ -137,6 +154,12 @@ export default function WorkFlow({ workflow, id, name }) {
     console.log(`Saving workflow: ${JSON.stringify(newWorkflow)}`);
     await saveWorkflow(newWorkflow);
     await loadAllWorkflows();
+  }
+
+  const onSave = useCallback(async () => {
+    setLoading(true);
+    await handleSave();
+    setLoading(false);
     alert('Saved successfully!');
 
     // Save to File code 
@@ -151,6 +174,8 @@ export default function WorkFlow({ workflow, id, name }) {
     // URL.revokeObjectURL(url);
   }, [getNodes, getEdges, getViewport, id, name, saveWorkflow]);
 
+
+  // Handle onLoad button 
   const onLoad = useCallback((file) => {
     if (file) {
       const reader = new FileReader();
@@ -214,13 +239,16 @@ export default function WorkFlow({ workflow, id, name }) {
     setShowChat(false);
   }
 
+  // Handle Chat button
   const sendChat = async (message) => {
     try {
+      setLoading(true);
       const flow = await askToClaude(message, workflow);
       if (flow.nodes) setNodes(flow.nodes);
       if (flow.edges) setEdges(flow.edges);
       if (flow.viewport) setViewport(flow.viewport);
       setClaudeFlowLoaded(true);
+      setLoading(false);
     } catch (error) {
       console.error('Error loading flow:', error);
     }
@@ -228,10 +256,12 @@ export default function WorkFlow({ workflow, id, name }) {
 
   useEffect(() => {
       if (claudeFlowLoaded) {
+        setLoading(true);
         const runWorkflow = async () => {
           setClaudeFlowLoaded(false);
-          await onSave();
-          await onExecute();
+          await handleSave();
+          await handleExecute();
+          setLoading(false);
         }
         runWorkflow();
       }
@@ -296,7 +326,12 @@ export default function WorkFlow({ workflow, id, name }) {
           </Button>
         </DialogActions>
       </Dialog>
-
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 }
