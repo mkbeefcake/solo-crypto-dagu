@@ -156,7 +156,7 @@ Remember:
 @traceable
 def create_react_flow(tool_call_order:list, current_json:str = ""):
     print(f"create_react_flow is called")    
-    print(f"tool_call_order: {tool_call_order}, current_json: {current_json}")
+    # print(f"tool_call_order: {tool_call_order}, current_json: {current_json}")
 
     prompt_template = f"""
 You are an assistant that creates or modifies React Flow JSON graphs.
