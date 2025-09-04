@@ -29,5 +29,6 @@ def main() -> str:
     print(content)
     return content
 
+
 if __name__ == '__main__':
     main()

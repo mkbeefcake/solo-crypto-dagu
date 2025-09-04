@@ -8,6 +8,7 @@ from node_definitions import NODE_DEFINITIONS, NodeDefinition, PortType
 from mcp_tool import router as mcp_router
 from workflow import router as workflow_router
 from solomcp.server import mcp
+from solomcp import tools
 from fastapi.staticfiles import StaticFiles
 
 import uvicorn
@@ -18,8 +19,7 @@ import os
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # start
-    logger.info("Starting MCP server")
-    
+    tools.register_all_tools()
     logger.info("Started MCP server", available_tools = await mcp.list_tools())
     asyncio.create_task(mcp.run_sse_async(mount_path="/mcp"))
     yield

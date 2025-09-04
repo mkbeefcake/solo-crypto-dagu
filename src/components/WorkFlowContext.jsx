@@ -23,7 +23,7 @@ export const WorkflowProvider = ({ children }) => {
   // Ask Claude AI to generate or modify a workflow
   const askToClaude = async (userMessage, workflow) => {
     try {
-      const res = await axios.post("/api/workflow/claudemcp", { 
+      const res = await axios.post("/api/workflow/claude", { 
         user_request: userMessage,
         current_json: workflow ? JSON.stringify(workflow) : ""
       }); 

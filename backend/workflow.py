@@ -37,9 +37,9 @@ class Workflow(BaseModel):
 
 
 @traceable
-@router.post("/workflow/claudemcp")
+@router.post("/workflow/claude")
 async def chat(request: Request):
-    print(f"/workflow/cluademcp is called")
+    print(f"/workflow/cluade is called")
 
     body = await request.json()
     user_request = body.get("user_request", "")
@@ -73,11 +73,16 @@ Remember:
         "input_schema": tool.inputSchema
     } for tool in tools]
 
+    # Ask Claude - initial message
     messages = [
         {"role": "user", "content": user_request},
     ]
+
+    # Iterate claude request and response
+    final_text = []
+    tool_results = {}
+
     while True:
-        # Ask Claude
         response = client.messages.create(
             model="claude-3-5-sonnet-20240620",  # Claude Sonnet 4
             max_tokens=1500,
@@ -87,30 +92,35 @@ Remember:
         )
 
         logger.info("Claude response", content=response)
+        if response.content[0].type == 'end_turn':
+            final_text.append(response.content[0].text)
+            break
 
-        # Process response and handle tool calls
-        final_text = []
+        # Process response and handle tool calls        
         assistant_message_content = []
-
         for content in response.content:
             if content.type == 'text':
                 final_text.append(content.text)
                 assistant_message_content.append(content)
-            elif content.type == 'tool_use':
-                tool_name = content.name
-                tool_args = content.input
 
-                # Execute tool call
+            elif content.type == 'tool_use':
+                tool_id = content.id
+                tool_name = content.name
+                tool_args = content.input                
+                for k, v in tool_args.items():
+                    if v in tool_results:
+                        tool_args[k] = tool_results[v]
+
+                # Execute tool call & parse its result
                 result = await mcp.call_tool(tool_name, tool_args)
                 final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
 
-                # Extract necessary info and append to messages
                 text_contents, result_dict = result
-
-                # Prefer dict["result"], fallback to TextContent.text
                 content_value = result_dict.get("result")
                 if not content_value and text_contents:
                     content_value = getattr(text_contents[0], "text", str(text_contents[0]))
+
+                tool_results[f"$result_{tool_id}$"] = content_value
 
                 # adjust messages
                 assistant_message_content.append(content)
@@ -124,85 +134,74 @@ Remember:
                         {
                             "type": "tool_result",
                             "tool_use_id": content.id,
-                            "content": content_value
+                            "content": f"$result_{tool_id}$"
                         }
                     ]
                 })
 
-                # Get next response from Claude
-                response = client.messages.create(
-                    model="claude-3-5-sonnet-20241022",
-                    max_tokens=1500,
-                    system=prompt_template,
-                    messages=messages,
-                    tools=available_tools
-                )
-
-                final_text.append(response.content[0].text)
-
-        return "\n".join(final_text)
+    return {"updated_json": final_text}
 
 
-@traceable
-@router.post("/workflow/claude")
-async def chat(request: Request):
-    print(f"/workflow/cluade is called")
+# @traceable
+# @router.post("/workflow/claude")
+# async def chat(request: Request):
+#     print(f"/workflow/cluade is called")
 
-    body = await request.json()
-    user_request = body.get("user_request", "")
-    current_json = body.get("current_json", "{}")
+#     body = await request.json()
+#     user_request = body.get("user_request", "")
+#     current_json = body.get("current_json", "{}")
 
-    print(f"user_request: {user_request}, current_json: {current_json}")
+#     print(f"user_request: {user_request}, current_json: {current_json}")
 
-    prompt_template = f"""
-You are an assistant that creates or modifies React Flow JSON graphs.
+#     prompt_template = f"""
+# You are an assistant that creates or modifies React Flow JSON graphs.
 
-- Input: A user request and optionally an existing React Flow JSON.
-- Task: If a JSON exists, modify it according to the request.  
-       If no JSON exists or the user requests a new one, create a valid new JSON from scratch.
-- Rules:
-  1. Always output only valid JSON, nothing else.  
-  2. If creating a new flow, use the following reference templates as examples:
-     - Simple two-node flow with one edge
-     {{
-       "nodes": [
-         {{ "id": "node_1", "type": "general", "data": {{ "label": "Start", "inputs": [], "midputs":[{{"name": "url", "label":"Enter url", "type": "string", "value": ""}}], "outputs":[{{"name": "content", "type": "string"}}] }}, "position": {{ "x": 100, "y": 100 }} }},
-         {{ "id": "node_2", "type": "general", "data": {{ "label": "End", "inputs": [{{"name": "text", "type": "string"}}], "midputs":[], "outputs":[] }}, "position": {{ "x": 400, "y": 100 }} }}
-       ],
-       "edges": [
-         {{ "id": "edge_1-2", "source": "node_1", "target": "node_2", "sourceHandle": "output-0", "targetHandle": "input-0" }}
-       ]
-     }}
-  3. Preserve existing fields unless explicitly changed.
-  4. Ensure schema is valid for React Flow: `nodes` (with id, data, position) and `edges`.
-  5. Ensure data fields match the following node definitions exactly.
-  6. If the user provides values for a specific component, use them as the values for that component's midputs
-  7. For each edge, the output type of the source component must match the input type of the target component.
+# - Input: A user request and optionally an existing React Flow JSON.
+# - Task: If a JSON exists, modify it according to the request.  
+#        If no JSON exists or the user requests a new one, create a valid new JSON from scratch.
+# - Rules:
+#   1. Always output only valid JSON, nothing else.  
+#   2. If creating a new flow, use the following reference templates as examples:
+#      - Simple two-node flow with one edge
+#      {{
+#        "nodes": [
+#          {{ "id": "node_1", "type": "general", "data": {{ "label": "Start", "inputs": [], "midputs":[{{"name": "url", "label":"Enter url", "type": "string", "value": ""}}], "outputs":[{{"name": "content", "type": "string"}}] }}, "position": {{ "x": 100, "y": 100 }} }},
+#          {{ "id": "node_2", "type": "general", "data": {{ "label": "End", "inputs": [{{"name": "text", "type": "string"}}], "midputs":[], "outputs":[] }}, "position": {{ "x": 400, "y": 100 }} }}
+#        ],
+#        "edges": [
+#          {{ "id": "edge_1-2", "source": "node_1", "target": "node_2", "sourceHandle": "output-0", "targetHandle": "input-0" }}
+#        ]
+#      }}
+#   3. Preserve existing fields unless explicitly changed.
+#   4. Ensure schema is valid for React Flow: `nodes` (with id, data, position) and `edges`.
+#   5. Ensure data fields match the following node definitions exactly.
+#   6. If the user provides values for a specific component, use them as the values for that component's midputs
+#   7. For each edge, the output type of the source component must match the input type of the target component.
 
-User Request:
-{user_request}
+# User Request:
+# {user_request}
 
-Each Node's data field schema definitions: {json.dumps(jsonable_encoder(NODE_DEFINITIONS))}
+# Each Node's data field schema definitions: {json.dumps(jsonable_encoder(NODE_DEFINITIONS))}
 
-Current JSON (can be empty or null):
-{current_json}
+# Current JSON (can be empty or null):
+# {current_json}
 
-Return the updated or newly created JSON only:
+# Return the updated or newly created JSON only:
 
-"""
+# """
 
-    response = client.messages.create(
-        model="claude-3-5-sonnet-20240620",  # Claude Sonnet 4
-        max_tokens=1500,
-        messages=[{"role": "user", "content": prompt_template}]
-    )
+#     response = client.messages.create(
+#         model="claude-3-5-sonnet-20240620",  # Claude Sonnet 4
+#         max_tokens=1500,
+#         messages=[{"role": "user", "content": prompt_template}]
+#     )
 
-    try:
-        updated_json = json.loads(response.content[0].text)        
-    except Exception:
-        updated_json = {"error": "Claude returned invalid JSON", "raw": response.content[0].text}
+#     try:
+#         updated_json = json.loads(response.content[0].text)        
+#     except Exception:
+#         updated_json = {"error": "Claude returned invalid JSON", "raw": response.content[0].text}
 
-    return {"updated_json": updated_json}
+#     return {"updated_json": updated_json}
 
 @router.get("/run-workflow/{workflow_id}")
 def execute_workflow(workflow_id):
