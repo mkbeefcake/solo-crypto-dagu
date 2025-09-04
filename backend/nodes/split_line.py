@@ -5,7 +5,7 @@ NODE_DEF = {
     "label": "Split text into lines",
     "inputs": [{"name": "data", "type": "string"}],
     "midputs": [],
-    "outputs": [{"name": "items", "type": "list"}],
+    "outputs": [{"name": "items", "type": "string"}],
     "value": {}
 }
 

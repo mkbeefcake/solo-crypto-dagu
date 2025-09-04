@@ -4,7 +4,7 @@ import ast
 
 NODE_DEF = {
     "label": "Select index from list",
-    "inputs": [{"name": "text", "type": "list"}],
+    "inputs": [{"name": "text", "type": "string"}],
     "midputs": [{"name": "index", "label": "Enter index (0-based)", "type": "int"}],
     "outputs": [{"name": "selected_item", "type": "string"}],
     "value": {}

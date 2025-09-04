@@ -4,7 +4,7 @@ import ast
 
 NODE_DEF = {
     "label": "Select last row",
-    "inputs": [{"name": "text", "type": "list"}],
+    "inputs": [{"name": "text", "type": "string"}],
     "midputs": [],
     "outputs": [{"name": "last_item", "type": "string"}],
     "value": {}
