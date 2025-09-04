@@ -116,7 +116,7 @@ Remember:
                 # Execute tool call & parse its result
                 result = await mcp.call_tool(tool_name, tool_args)
                 
-                tool_call_orders.append(f"[Calling tool {tool_name} with args {tool_args}]")
+                tool_call_orders.append(f"[Calling Tool '{tool_name}' with args {content.input}]")
 
                 text_contents, result_dict = result
                 content_value = result_dict.get("result")

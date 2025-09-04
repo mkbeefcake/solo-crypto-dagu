@@ -125,89 +125,11 @@
     }
   },
   {
-    "id": "3be3f71e-0006-40c2-8d86-557871f69166",
+    "id": "956ca063-9529-45e0-ab15-bef38cb93fae",
     "name": "Untitled",
     "flow": {
-      "nodes": [
-        {
-          "id": "node_1",
-          "type": "general",
-          "data": {
-            "label": "URL Request",
-            "inputs": [],
-            "midputs": [
-              {
-                "name": "url",
-                "label": "Enter url",
-                "type": "string",
-                "value": "https://static.dwcdn.net/data/kSCt4.csv"
-              }
-            ],
-            "outputs": [
-              {
-                "name": "content",
-                "type": "string"
-              }
-            ]
-          },
-          "position": {
-            "x": 246.34869459156153,
-            "y": 31.638518970260836
-          },
-          "measured": {
-            "width": 244,
-            "height": 92
-          },
-          "selected": true,
-          "dragging": false
-        },
-        {
-          "id": "node_2",
-          "type": "general",
-          "data": {
-            "label": "Select index from list",
-            "inputs": [
-              {
-                "name": "text",
-                "type": "string"
-              }
-            ],
-            "midputs": [
-              {
-                "name": "index",
-                "label": "Enter index (0-based)",
-                "type": "int",
-                "value": 9
-              }
-            ],
-            "outputs": [
-              {
-                "name": "selected_item",
-                "type": "string"
-              }
-            ]
-          },
-          "position": {
-            "x": 243.86224025394785,
-            "y": 165.17581235994714
-          },
-          "measured": {
-            "width": 244,
-            "height": 92
-          },
-          "selected": false,
-          "dragging": false
-        }
-      ],
-      "edges": [
-        {
-          "id": "edge_1-2",
-          "source": "node_1",
-          "target": "node_2",
-          "sourceHandle": "output-0",
-          "targetHandle": "input-0"
-        }
-      ],
+      "nodes": [],
+      "edges": [],
       "viewports": []
     }
   }
