@@ -6,12 +6,16 @@ from ..server import mcp
 @mcp.tool(name="list_select_by_index", description="select an element from a list by index")
 def list_select_by_index(data: str, index: int) -> str:
     try:
-        # Parse input into a Python list (safe parsing of strings like '["a","b","c"]')
-        data_list = ast.literal_eval(data)
-        if not isinstance(data_list, list):
+        # Try parsing as Python list
+        if data.strip().startswith('[') and data.strip().endswith(']'):
+            data_list = ast.literal_eval(data)
+            if not isinstance(data_list, list):
+                raise ValueError("Not a list")
+        else:
+            # Fallback: split by newlines
             data_list = [line.strip() for line in data.splitlines() if line.strip()]
     except Exception as e:
-        print(f"Error parsing list_data: {e}")
+        print(f"Error parsing input: {e}")
         return ""
         
     # Get selected element safely

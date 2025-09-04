@@ -18,7 +18,7 @@ from lib.log.logger import logger
 from lib.variable import temp_venv_directory
 from lib.workflow.runner import WorkflowRunner
 from solomcp.server import mcp
-
+import copy
 
 load_dotenv()
 
@@ -106,7 +106,7 @@ Remember:
             elif content.type == 'tool_use':
                 tool_id = content.id
                 tool_name = content.name
-                tool_args = content.input                
+                tool_args = copy.deepcopy(content.input)
                 for k, v in tool_args.items():
                     if v in tool_results:
                         tool_args[k] = tool_results[v]
