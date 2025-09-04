@@ -16,10 +16,15 @@ def main() -> str:
     args = parser.parse_args()
     
     try:
-        # Safely parse string like '["a", "b", "c"]' into a Python list
-        data_list = ast.literal_eval(args.data)
-        if not isinstance(data_list, list):
-            raise ValueError("Provided --data is not a list")
+        # Try parsing as Python list
+        if args.data.strip().startswith('[') and args.data.strip().endswith(']'):
+            data_list = ast.literal_eval(args.data)
+            if not isinstance(data_list, list):
+                raise ValueError("Not a list")
+        else:
+            # Fallback: split by newlines
+            data_list = [line.strip() for line in args.data.splitlines() if line.strip()]
+            
     except Exception as e:
         print(f"Error parsing input: {e}")
         return ""

@@ -125,8 +125,8 @@
     }
   },
   {
-    "id": "bb07a161-bf38-4682-8882-914273ae0be2",
-    "name": "new ",
+    "id": "3be3f71e-0006-40c2-8d86-557871f69166",
+    "name": "Untitled",
     "flow": {
       "nodes": [
         {
@@ -135,13 +135,6 @@
           "data": {
             "label": "URL Request",
             "inputs": [],
-            "outputs": [
-              {
-                "name": "content",
-                "label": null,
-                "type": "string"
-              }
-            ],
             "midputs": [
               {
                 "name": "url",
@@ -149,81 +142,60 @@
                 "type": "string",
                 "value": "https://static.dwcdn.net/data/kSCt4.csv"
               }
+            ],
+            "outputs": [
+              {
+                "name": "content",
+                "type": "string"
+              }
             ]
           },
           "position": {
-            "x": 63,
-            "y": -20.225013732910156
+            "x": 246.34869459156153,
+            "y": 31.638518970260836
           },
           "measured": {
-            "width": 232,
+            "width": 244,
             "height": 92
           },
-          "selected": false,
+          "selected": true,
           "dragging": false
         },
         {
           "id": "node_2",
           "type": "general",
           "data": {
-            "label": "Split text into lines",
-            "inputs": [
-              {
-                "name": "data",
-                "label": null,
-                "type": "string"
-              }
-            ],
-            "outputs": [
-              {
-                "name": "items",
-                "label": null,
-                "type": "list"
-              }
-            ],
-            "midputs": []
-          },
-          "position": {
-            "x": 173,
-            "y": 108.5
-          },
-          "measured": {
-            "width": 123,
-            "height": 40
-          },
-          "selected": false,
-          "dragging": false
-        },
-        {
-          "id": "node_3",
-          "type": "general",
-          "data": {
-            "label": "Select last row",
+            "label": "Select index from list",
             "inputs": [
               {
                 "name": "text",
-                "label": null,
-                "type": "list"
+                "type": "string"
+              }
+            ],
+            "midputs": [
+              {
+                "name": "index",
+                "label": "Enter index (0-based)",
+                "type": "int",
+                "value": 9
               }
             ],
             "outputs": [
               {
-                "name": "last_item",
-                "label": null,
+                "name": "selected_item",
                 "type": "string"
               }
-            ],
-            "midputs": []
+            ]
           },
           "position": {
-            "x": 177,
-            "y": 168.5
+            "x": 243.86224025394785,
+            "y": 165.17581235994714
           },
           "measured": {
-            "width": 102,
-            "height": 40
+            "width": 244,
+            "height": 92
           },
-          "selected": true,
+          "selected": false,
           "dragging": false
         }
       ],
@@ -232,13 +204,6 @@
           "id": "edge_1-2",
           "source": "node_1",
           "target": "node_2",
-          "sourceHandle": "output-0",
-          "targetHandle": "input-0"
-        },
-        {
-          "id": "edge_2-3",
-          "source": "node_2",
-          "target": "node_3",
           "sourceHandle": "output-0",
           "targetHandle": "input-0"
         }

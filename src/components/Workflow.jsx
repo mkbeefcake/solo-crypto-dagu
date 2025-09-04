@@ -106,6 +106,7 @@ export default function WorkFlow({ workflow, id, name }) {
   // Handle Execute button 
   const handleExecute = async () => {
     const data = await executeWorkflow(id);
+    debugger
     if (data.error) {
       setResult(data.error);
     }
