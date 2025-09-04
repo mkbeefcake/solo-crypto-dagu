@@ -243,17 +243,20 @@ export default function WorkFlow({ workflow, id, name }) {
   const sendChat = async (message) => {
     try {
       setLoading(true);
-      const flow = await askToClaude(message, workflow);
-      debugger            
+      const { flow, text } = await askToClaude(message, workflow);
+      debugger
 
       if (flow.nodes) setNodes(flow.nodes);
       if (flow.edges) setEdges(flow.edges);
       if (flow.viewport) setViewport(flow.viewport);
-      if (flow) {
-        setClaudeFlowLoaded(true);
+      if (flow.nodes && flow.edges && flow.viewport) {
+        // setClaudeFlowLoaded(true);
+      }
+      else {
+        setResult(text);
+        setOpen(true);
       }
       setLoading(false);
-
     } catch (error) {
       console.error('Error loading flow:', error);
     }

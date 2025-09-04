@@ -58,8 +58,9 @@ Guidelines:
 - Only request a tool with valid JSON input matching its schema.
 - After receiving tool results, incorporate them into your reasoning.
 - Continue this loop until the user’s request is fulfilled.
-- Provide a final clear and concise response to the user.
-- If the task is impossible or data is missing, say so.
+- Provide a final, complete answer to the user's request.
+- Do not ask any further clarifying questions or additional follow-ups.
+- If information is missing, state what is missing instead of asking for it.
 
 Remember:
 - Always check your available tools before answering.
@@ -80,20 +81,21 @@ Remember:
 
     # Iterate claude request and response
     final_text = []
+    tool_call_orders = []
     tool_results = {}
 
     while True:
         response = client.messages.create(
             model="claude-3-5-sonnet-20240620",  # Claude Sonnet 4
-            max_tokens=1500,
+            max_tokens=3000,
             system=prompt_template,
             messages=messages,
             tools=available_tools
         )
 
         logger.info("Claude response", content=response)
-        if response.content[0].type == 'end_turn':
-            final_text.append(response.content[0].text)
+        if response.stop_reason == 'end_turn':
+            final_text = response.content[0].text
             break
 
         # Process response and handle tool calls        
@@ -113,14 +115,15 @@ Remember:
 
                 # Execute tool call & parse its result
                 result = await mcp.call_tool(tool_name, tool_args)
-                final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
+                
+                tool_call_orders.append(f"[Calling tool {tool_name} with args {tool_args}]")
 
                 text_contents, result_dict = result
                 content_value = result_dict.get("result")
                 if not content_value and text_contents:
                     content_value = getattr(text_contents[0], "text", str(text_contents[0]))
 
-                tool_results[f"$result_{tool_id}$"] = content_value
+                tool_results[f"result_{tool_id}"] = content_value
 
                 # adjust messages
                 assistant_message_content.append(content)
@@ -134,12 +137,83 @@ Remember:
                         {
                             "type": "tool_result",
                             "tool_use_id": content.id,
-                            "content": f"$result_{tool_id}$"
+                            "content": f"result_{tool_id}"
                         }
                     ]
                 })
 
-    return {"updated_json": final_text}
+    # adjust final_text with real tool results
+    for k, v in tool_results.items():
+        if k in final_text:
+            final_text = final_text.replace(k, str(v))
+
+    logger.info("Final response to user", final_text=final_text)
+    workflow = create_react_flow(tool_call_orders)
+
+    return {"updated_json": {"flow": workflow, "text": final_text}}
+
+
+@traceable
+def create_react_flow(tool_call_order:list, current_json:str = ""):
+    print(f"create_react_flow is called")    
+    print(f"tool_call_order: {tool_call_order}, current_json: {current_json}")
+
+    prompt_template = f"""
+You are an assistant that creates or modifies React Flow JSON graphs.
+
+- Input: A React flow node sequences and optionally an existing React Flow JSON.
+- Task: If a JSON exists, modify it according to the React flow sequence.  
+       If no JSON exists or create a valid new JSON from scratch.
+- Rules:
+  1. Always output only valid JSON, nothing else.  
+  2. If creating a new flow, use the following reference templates as examples:
+     - Simple two-node flow with one edge
+     {{
+       "nodes": [
+         {{ "id": "node_1", "type": "general", "data": {{ "label": "Start", "inputs": [], "midputs":[{{"name": "url", "label":"Enter url", "type": "string", "value": ""}}], "outputs":[{{"name": "content", "type": "string"}}] }}, "position": {{ "x": 100, "y": 100 }} }},
+         {{ "id": "node_2", "type": "general", "data": {{ "label": "End", "inputs": [{{"name": "text", "type": "string"}}], "midputs":[], "outputs":[] }}, "position": {{ "x": 400, "y": 100 }} }}
+       ],
+       "edges": [
+         {{ "id": "edge_1-2", "source": "node_1", "target": "node_2", "sourceHandle": "output-0", "targetHandle": "input-0" }}
+       ]
+     }}
+  3. Preserve existing fields unless explicitly changed.
+  4. Ensure schema is valid for React Flow: `nodes` (with id, data, position) and `edges`.
+  5. Ensure data fields match the following node definitions exactly.
+  6. If the user provides values for a specific component, use them as the values for that component's midputs
+  7. For each edge, the output type of the source component must match the input type of the target component.
+
+React flow sequence:
+{tool_call_order}
+
+Each Node's data field schema definitions: {json.dumps(jsonable_encoder(NODE_DEFINITIONS))}
+
+Current JSON (can be empty or null):
+{current_json}
+
+Return the updated or newly created JSON only:
+
+"""
+
+    response = client.messages.create(
+        model="claude-3-5-sonnet-20240620",  # Claude Sonnet 4
+        max_tokens=1500,
+        messages=[{"role": "user", "content": prompt_template}]
+    )
+
+    try:
+        updated_json = json.loads(response.content[0].text)        
+    except Exception:
+        updated_json = {"error": "Claude returned invalid JSON", "raw": response.content[0].text}
+
+    return updated_json
+
+
+
+
+
+
+
 
 
 # @traceable
