@@ -17,6 +17,8 @@ from lib.workflow.helper import load_workflows, save_workflows
 from lib.log.logger import logger
 from lib.variable import temp_venv_directory
 from lib.workflow.runner import WorkflowRunner
+from solomcp.server import mcp
+
 
 load_dotenv()
 
@@ -32,6 +34,114 @@ class Workflow(BaseModel):
     id: Optional[str] = None
     name: Optional[str] = None
     flow: Optional[Flow] = None
+
+
+@traceable
+@router.post("/workflow/claudemcp")
+async def chat(request: Request):
+    print(f"/workflow/cluademcp is called")
+
+    body = await request.json()
+    user_request = body.get("user_request", "")
+    current_json = body.get("current_json", "{}")
+
+    print(f"user_request: {user_request}")
+
+    prompt_template = f"""
+You are an autonomous AI agent. 
+Your goal is to achieve the user’s objective by reasoning step by step, 
+using available tools when necessary, and clearly returning results. 
+
+Guidelines:
+- Think out loud about what steps are needed.
+- If a tool is available that helps, call it instead of guessing.
+- Only request a tool with valid JSON input matching its schema.
+- After receiving tool results, incorporate them into your reasoning.
+- Continue this loop until the user’s request is fulfilled.
+- Provide a final clear and concise response to the user.
+- If the task is impossible or data is missing, say so.
+
+Remember:
+- Always check your available tools before answering.
+- Do not hallucinate information — rely on tools or user input.
+- Stay within the user’s intent and avoid irrelevant actions.
+"""
+    tools = await mcp.list_tools()
+    available_tools = [{
+        "name": tool.name,
+        "description": tool.description,
+        "input_schema": tool.inputSchema
+    } for tool in tools]
+
+    messages = [
+        {"role": "user", "content": user_request},
+    ]
+    while True:
+        # Ask Claude
+        response = client.messages.create(
+            model="claude-3-5-sonnet-20240620",  # Claude Sonnet 4
+            max_tokens=1500,
+            system=prompt_template,
+            messages=messages,
+            tools=available_tools
+        )
+
+        logger.info("Claude response", content=response)
+
+        # Process response and handle tool calls
+        final_text = []
+        assistant_message_content = []
+
+        for content in response.content:
+            if content.type == 'text':
+                final_text.append(content.text)
+                assistant_message_content.append(content)
+            elif content.type == 'tool_use':
+                tool_name = content.name
+                tool_args = content.input
+
+                # Execute tool call
+                result = await mcp.call_tool(tool_name, tool_args)
+                final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
+
+                # Extract necessary info and append to messages
+                text_contents, result_dict = result
+
+                # Prefer dict["result"], fallback to TextContent.text
+                content_value = result_dict.get("result")
+                if not content_value and text_contents:
+                    content_value = getattr(text_contents[0], "text", str(text_contents[0]))
+
+                # adjust messages
+                assistant_message_content.append(content)
+                messages.append({
+                    "role": "assistant",
+                    "content": assistant_message_content
+                })
+                messages.append({
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "tool_result",
+                            "tool_use_id": content.id,
+                            "content": content_value
+                        }
+                    ]
+                })
+
+                # Get next response from Claude
+                response = client.messages.create(
+                    model="claude-3-5-sonnet-20241022",
+                    max_tokens=1500,
+                    system=prompt_template,
+                    messages=messages,
+                    tools=available_tools
+                )
+
+                final_text.append(response.content[0].text)
+
+        return "\n".join(final_text)
+
 
 @traceable
 @router.post("/workflow/claude")

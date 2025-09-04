@@ -244,13 +244,19 @@ export default function WorkFlow({ workflow, id, name }) {
     try {
       setLoading(true);
       const flow = await askToClaude(message, workflow);
+
       if (flow.nodes) setNodes(flow.nodes);
       if (flow.edges) setEdges(flow.edges);
       if (flow.viewport) setViewport(flow.viewport);
-      setClaudeFlowLoaded(true);
+      if (flow) {
+        setClaudeFlowLoaded(true);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error loading flow:', error);
+    }
+    finally {
+      setLoading(false);
     }
   }
 

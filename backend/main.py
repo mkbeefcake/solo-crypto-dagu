@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
     # start
     logger.info("Starting MCP server")
     
-    # logger.info("Started MCP server", available_tools = await mcp.list_tools())
+    logger.info("Started MCP server", available_tools = await mcp.list_tools())
     asyncio.create_task(mcp.run_sse_async(mount_path="/mcp"))
     yield
 
@@ -50,7 +50,7 @@ async def get_port_colors():
 app.include_router(mcp_router)
 app.include_router(workflow_router)
 
-app.mount("/", StaticFiles(directory="../dist", html=True), name="static")
+# app.mount("/", StaticFiles(directory="../dist", html=True), name="static")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)

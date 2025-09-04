@@ -26,13 +26,13 @@
                 "name": "url",
                 "label": "Enter url",
                 "type": "string",
-                "value": "https://static.dwcdn.net/data/kSCt4.csv"
+                "value": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/daily-treasury-rates.csv/all/202509?type=daily_treasury_yield_curve&field_tdr_date_value_month=202509&page&_format=csv"
               }
             ],
             "value": {}
           },
           "measured": {
-            "width": 232,
+            "width": 244,
             "height": 92
           },
           "selected": false,
@@ -65,7 +65,7 @@
             "value": {}
           },
           "measured": {
-            "width": 123,
+            "width": 121,
             "height": 40
           },
           "selected": false,
@@ -101,7 +101,7 @@
             "width": 102,
             "height": 40
           },
-          "selected": true,
+          "selected": false,
           "dragging": false
         }
       ],
