@@ -17,8 +17,9 @@ def main() -> str:
     
     try:           
         headers = {
-            "User-Agent": "Mozilla/5.0 (compatible; MyBot/1.0; +https://example.com)"
-        }
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 \
+                (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
+        }        
 
         response = requests.get(args.url, headers=headers, timeout=10)
         response.raise_for_status()  #  raise error for bad status codes
